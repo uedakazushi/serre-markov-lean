@@ -3,6 +3,7 @@ import SerreMarkov.FullClassificationPipeline
 import SerreMarkov.ClassificationDecision
 import SerreMarkov.CanonicalLatticeDecision
 import SerreMarkov.DegenerateJordan
+import SerreMarkov.PrimeSquareFiberRepresentatives
 
 /-! # The manuscript's full classification and finite forgetful fibers
 
@@ -60,6 +61,19 @@ theorem prime_square_power_fiber_card (p e : ℕ) (hp : p.Prime) (hodd : Odd p) 
       solutionForgetfulMap o=Quotient.mk latticeSetoid (family (p^(2*e)) 0)}=
         (p^e+1)/2 :=
   NegativeFamilyOrbitFibers.primePower_zero_solution_forgetful_fiber_card p e hp hodd
+
+/-- The prime-square-power fiber has the manuscript's explicit, complete
+list, rather than merely the asserted finite cardinality. -/
+noncomputable def primeSquarePowerFiberEquiv (p e : ℕ) (hp : p.Prime) (hodd : Odd p) :
+    Fin ((p^e+1)/2) ≃ FamilyOrbitFibers.FullFiber (p^(2*e)) 0 :=
+  PrimeSquareFiberRepresentatives.explicitFullFiberEquiv p e hp hodd
+
+theorem prime_square_power_unique_representative (p e : ℕ) (hp : p.Prime) (hodd : Odd p)
+    (z : Six) (hz : isSolution z)
+    (hl : LatticeEquivalent z (family (p^(2*e)) 0)) :
+    ∃! j : Fin ((p^e+1)/2),
+      Reachable z (PrimeSquareFiberRepresentatives.representative p e j) :=
+  PrimeSquareFiberRepresentatives.solution_unique_representative p e hp hodd z hz hl
 
 /-- Each individual fiber is finite, while their sizes have no common bound. -/
 theorem finite_fibers_and_unbounded :

@@ -1,0 +1,625 @@
+\section{負側と退化型の分類}
+
+この章は、整数解を標準代表へ移す存在証明と、標準代表どうしを分離する
+一意性証明を扱う。両者は異なる問題である。存在には高さに関する整礎帰納法を
+用い、一意性には整数反射語と境界の合同不変集合を用いる。原稿の双曲反射群の
+基本領域からの証明を形式化したものではなく、実装された代数的証明の依存関係を
+示す。
+
+以下、\(G_z\) はEuler行列、\(H_z=G_z+G_z^{\mathsf T}\) はその対称化、
+\(N_z=G_z^{-1}G_z^{\mathsf T}+I\) はシフトしたSerre作用素とする。
+\(\tau(z)\) は \(H_z\) の四つの主三次小行列式の和である。
+負側は \(\tau(z)<0\)、退化側は \(N_z^3=0\) で特徴付けられる。
+\(\Reach(z,w)\) は符号変更も許した有限の変異語による到達可能性を表す。
+整数格子の同型条件 \(\Latt(z,w)\) とは、ある \(B\in GL_4(\Z)\) に対する
+\(B^{\mathsf T}G_zB=G_w\) である。
+
+\subsection{退化型をCayley立方へ移す}
+
+退化型を先に扱うと、分類に使う整数的な降下の仕組みが三変数で見える。
+四次の冪零性だけからは、一般の行列について \(N^3=0\) と \(N^2=0\) は同値で
+ない。この問題ではEuler行列の特別な形と二つの解方程式を合わせることで、
+Jordan型 \([3,1]\) が除外される。
+
+\begin{proposition}[退化型の整数正規表示]
+\label{bp:deg-reduced}
+\lean{SerreMarkov.cofactor_zero_of_cube_zero}
+\lean{SerreMarkov.cofactor_zero_reduced}
+\lean{SerreMarkov.cube_zero_implies_square_zero}
+\leanok
+\(z\in\Sol\) かつ \(N_z^3=0\) とする。このとき \(N_z^2=0\) である。
+さらに、一つの符号変更で \(q_2(z)=-4\) にそろえれば、
+\[
+ z=D(a,b,d):=(a,b,-d,d,b-ad,-a),
+ \qquad a^2+b^2+d^2-abd=4
+\]
+という整数表示を得る。符号変更が不要な場合はもとの解自身がこの表示を持つ。
+\end{proposition}
+\begin{proof}
+\uses{bp:def-solution,bp:matrix-nilpotent}
+\leanok
+解方程式から \(q_2(z)^2=16\) である。第一基底ベクトルの符号変更は
+\(q_2\) の符号を反転させ、\(N_z\) を整数対角行列による共役へ移す。
+したがって、三乗零を保ったまま \(q_2=-4\) としてよい。
+
+\(\det(tI-N_z)=t^4\) と \(N_z^3=0\) から
+\[
+ \operatorname{adj}(tI-N_z)=t^3I+t^2N_z+tN_z^2
+\]
+を多項式行列として証明する。右辺と \(tI-N_z\) の積は \(t^4I\) である。
+左辺にも同じ積公式があり、非零の行列式を持つ多項式行列の右消去によって両者が
+一致する。\(t=0\) の評価で \(\operatorname{adj}(N_z)=0\) を得る。
+\(H_z=G_zN_z\) なので \(\operatorname{adj}(H_z)=0\) でもある。
+
+ここから三つの平方和の恒等式を使う。第一の恒等式は
+\(8(a+f)^2\)、第二は \(8(c+d)^2\) を、対称余因子と \(q_2+4\) の
+整数多項式結合として表す。これらを零とすれば \(f=-a\)、\(c=-d\) となる。
+第三の恒等式は、その代入後の \(2(b-e-ad)^2\) を同じように表すため、
+\(e=b-ad\) が従う。したがって \(z=D(a,b,d)\) であり、
+\[
+ q_2(D(a,b,d))=-(a^2+b^2+d^2-abd)
+\]
+がCayley立方の方程式を与える。
+
+最後に、\(N_{D(a,b,d)}^2\) の十六成分を計算すると、すべてが
+\(q_2(D(a,b,d))+4\) を因子に持つ。これが零なので二乗零である。
+実装では多項式恒等式を \code{ring}、平方の非負性を明示した算術推論を
+\code{nlinarith} で検査する。随伴行列の消滅から出発しており、退化型の分類を
+先に仮定していない。
+\end{proof}
+
+\begin{lemma}[Cayley立方の整数Vieta降下]
+\label{bp:deg-vieta}
+\lean{SerreMarkov.markov_sign_normalized_cases}
+\lean{SerreMarkov.markov_positive_descent}
+\leanok
+整数 \(a,b,d\) が \(a^2+b^2+d^2-abd=4\) を満たすとする。
+偶数個の符号変更で \(a,b\ge0\) にそろえると、次のいずれかが成立する。
+\[
+ |a|=2\ \text{または}\ |b|=2\ \text{または}\ |d|=2;
+ \qquad (a,b,d)=(1,1,-1);
+ \qquad a,b,d\ge3.
+\]
+最後の場合、巡回置換で \(d\ge a,b\) とすれば
+\[
+ 0<ab-d<d.
+\]
+したがってVieta変換 \(d\mapsto ab-d\) は三変数の絶対値の和を厳密に減らす。
+\end{lemma}
+\begin{proof}
+\uses{bp:deg-reduced}
+\leanok
+\(d<0\) の場合は \(abd\le0\) なので
+\(a^2+b^2+d^2\le4\) であり、小さい整数の有限の場合分けに帰着する。
+\(d\ge0\) の場合は、まず絶対値 \(2\) の座標がある分岐を取り除く。
+そのうえで、どれかが \(3\) 未満ならば、その座標は \(0\) または \(1\) である。
+方程式と平方の非負性によって残りの座標を有界にでき、再び絶対値 \(2\) の座標が
+必要となるため矛盾する。絶対値 \(2\) の分岐ではほかの座標は有界とは限らず、
+例えば \((2,b,b)\) は任意の整数 \(b\) に対する解である。
+こうして任意の整数解から三つの分岐を導き、最初から有界解だけに制限しない。
+
+大きい分岐では、さらに \(a\le b\le d\) としてよい。
+\[
+ d(ab-d)=a^2+b^2-4>0
+\]
+から新しい根の正値性を得る。一方、
+\[
+ (d-b)(ab-d-b)=a^2+(2-a)b^2-4<0
+\]
+であり、\(d-b\ge0\) なので \(ab-d<b\le d\) となる。
+二つの小さい座標の順序が逆の場合は同じ議論で交換する。
+積の符号を明示することで、Leanは順序体を導入せず、\(\Z\) 上の不等式として
+この降下を検証する。
+\end{proof}
+
+\begin{theorem}[退化型の標準族への到達]
+\label{bp:deg-surjective}
+\lean{SerreMarkov.reducedDegenerate_reachable_family}
+\lean{SerreMarkov.degenerate_classification_surjective}
+\leanok
+任意の \(z\in\Sol\) について、\(N_z^3=0\) ならば
+\[
+ \exists k\in\Z_{\ge0},\qquad \Reach(z,\F(k,-k))
+\]
+である。
+\end{theorem}
+\begin{proof}
+\uses{bp:deg-reduced,bp:deg-vieta,bp:def-reachable,bp:def-family}
+\leanok
+三変数表示には、もとの変異の具体的な公式がある。
+\[
+ \mu_1D(a,b,d)=D(a,ab-d,b),\qquad
+ \mu_2D(a,b,d)=D(ad-b,a,d).
+\]
+さらに \(\mu_1\) の後に \(\mu_2\) を作用させる語は
+\(D(a,b,d)\mapsto D(d,a,b)\) という巡回置換になる。
+二個の基底符号を変更する語は
+\((a,b,d)\mapsto(-a,b,-d)\) と
+\((a,b,d)\mapsto(a,-b,-d)\) を実現する。
+以上はすべて、三変数の任意の整数値についての六成分恒等式である。
+
+\(|a|+|b|+|d|\) に関する強帰納法を行う。
+補題\ref{bp:deg-vieta}の大きい分岐では、上の実際の変異が高さを減らすので
+帰納法の仮定を適用できる。
+\(d=2\) の分岐では方程式が \((a-b)^2=0\) となり、
+\(D(a,a,2)=\F(-a,a)\) である。他の位置の \(\pm2\) は符号変更と巡回置換で
+この分岐へ移す。残る \((1,1,-1)\) は一回の変異で \((1,2,1)\) となり、
+絶対値 \(2\) の分岐に入る。最後に同時符号反転で \(k\ge0\) にそろえる。
+
+Leanでの到達可能性の証人は有限リストであり、帰納法の各段階で語を連結する。
+抽象的な同値関係に代表が存在するだけでなく、使った各操作が実際の変異生成元で
+あることまで証明される。
+\end{proof}
+
+\begin{lemma}[退化パラメータの格子不変量]
+\label{bp:deg-content}
+\lean{SerreMarkov.latticeEquivalent_minorDvd}
+\lean{SerreMarkov.degenerate_family_minorDvd}
+\lean{SerreMarkov.degenerate_family_lattice_injective}
+\leanok
+\uses{bp:def-family,bp:def-lattice}
+対称行列のすべての二次小行列式を割る整数の集合は、整数格子同型で保存される。
+\(\F(k,-k)\) についてこの集合は
+\[
+ \{d\in\Z:d\mid4-k^2\}
+\]
+である。したがって、\(k,l\ge0\) かつ
+\(\Latt(\F(k,-k),\F(l,-l))\) ならば \(k=l\) である。
+\end{lemma}
+\begin{proof}
+\uses{bp:def-family,bp:def-reachable}
+\leanok
+二次小行列式を
+\(A_{ik}A_{jl}-A_{il}A_{jk}\) と定義する。積 \(BA\) のこの式を展開すると
+\(A\) の二次小行列式の整数係数和になる。右乗法も同様であり、
+合同 \(B^{\mathsf T}AB\) に対して整除性が保存される。
+格子同型の逆を使うことで両方向の保存則が得られる。
+Smith標準形の存在やその算法はここでは必要ない。
+
+族の対称行列を直接代入すると、各小行列式は \(0\) または \(\pm(4-k^2)\) であり、
+その一つは \(4-k^2\) そのものである。従って同型なら
+\(|4-k^2|=|4-l^2|\) となる。同符号の分岐では \(k^2=l^2\) なので
+非負性から \(k=l\) である。逆符号の分岐では \(k^2+l^2=8\) となり、
+\(0\le k,l\le2\) に帰着して、やはり \(k=l=2\) を得る。
+特に \(k=2\) の小行列式がすべて零になる境界も含まれる。
+\end{proof}
+
+\begin{theorem}[退化側の完全分類]
+\label{bp:deg-classification}
+\lean{SerreMarkov.degenerate_classification}
+\lean{SerreMarkov.degenerate_lattice_classification}
+\lean{SerreMarkov.degenerate_latticeEquivalent_iff_reachable}
+\leanok
+\(z\in\Sol\)、\(N_z^3=0\) ならば、\(\Reach(z,\F(k,-k))\) を満たす
+\(k\ge0\) はただ一つである。同じことは到達可能性を整数格子同型に置き換えても
+成立する。さらに退化側の任意の二解 \(z,w\) に対して
+\[
+ \Latt(z,w)\quad\Longleftrightarrow\quad\Reach(z,w).
+\]
+\end{theorem}
+\begin{proof}
+\uses{bp:deg-surjective,bp:deg-content}
+\leanok
+存在は定理\ref{bp:deg-surjective}である。二つの候補 \(k,l\) があれば、
+到達語を逆にして連結することで族どうしが変異同値となる。
+変異は整数基底変更なので、補題\ref{bp:deg-content}によって \(k=l\) となる。
+格子同型による一意性でも同じ補題がそのまま使える。
+
+退化解 \(z,w\) をそれぞれ \(\F(k,-k),\F(l,-l)\) へ移す。
+\(z,w\) の格子が同型なら \(k=l\) であり、二つの到達語を連結すれば
+\(\Reach(z,w)\) を得る。逆向きは変異による整数合同である。
+退化側では、格子を忘却したときのファイバーが一元であることがこの段階で
+確定する。
+\end{proof}
+
+\subsection{負側の局所降下と全解への帰納法}
+
+負側の存在証明では、三角形の一辺だけを小さくする操作を、そのまま全六成分の
+降下とみなしてはいけない。変異は二つの成分を同時に変えるため、一方の減少が
+他方の増大で相殺され得る。実装は六成分全部の高さを比較し、境界で必要になる
+複数の変異を一つの有限語として扱う。
+
+\begin{definition}[高さと族到達または降下の条件]
+\label{bp:neg-height}
+\lean{SerreMarkov.NegativeDescent.l1}
+\lean{SerreMarkov.NegativeTwoEdge.FamilyOrDrop}
+\leanok
+\(z=(a,b,c,d,e,f)\in\Z^6\) の高さを
+\[
+ h(z)=|a|+|b|+|c|+|d|+|e|+|f|\in\N
+\]
+とする。\(P(z)\) は次の二者択一を表す。
+\[
+ \bigl(\exists x,y\in\Z,\ \Reach(z,\F(x,y))\bigr)
+ \quad\text{または}\quad
+ \bigl(\exists W,\ h(Wz)<h(z)\bigr).
+\]
+ここで \(W\) は変異と符号変更の生成元の有限語である。
+\end{definition}
+
+Leanは高さを \code{Int.natAbs} の和として自然数に置く。算術計算に便利な
+整数値の絶対値和も別に定義し、両者の自然なキャストが一致することを証明する。
+この分離により、強帰納法は \(\N\)、\code{omega} と \code{nlinarith} による
+不等式検査は \(\Z\) 上で行える。\(P(z)\) の第二分岐では途中の全段階が下降する
+必要はなく、語の終点がもとの高さより小さいことが条件である。
+
+\begin{lemma}[負側の四つのCayley不等式]
+\label{bp:neg-triangles}
+\lean{SerreMarkov.NegativeTriangles.negative_triangle_inequalities}
+\lean{SerreMarkov.NegativeTriangles.cayley_positive_abs_descent}
+\leanok
+\(C(u,v,w)=u^2+v^2+w^2-uvw\) とおく。
+\(z\in\Sol\)、\(\tau(z)<0\) ならば
+\[
+ C(a,b,d),\ C(a,c,e),\ C(b,c,f),\ C(d,e,f)\ \ge4.
+\]
+一般に \(u,v,w\ge3\)、\(u,v\le w\)、\(C(u,v,w)\ge4\) ならば
+\[
+ |uv-w|<w.
+\]
+\end{lemma}
+\begin{proof}
+\uses{bp:intrinsic-frame,bp:intrinsic-kind}
+\leanok
+整数旗に適合したフレームでは、対称形式の随伴行列が
+\(2A\kappa^2pp^{\mathsf T}\) と表される。負側では \(A<0\) であり、
+各対角余因子は非正となる。対応する三次小行列式は
+\(8-2C(u,v,w)\) なので、四つの不等式が従う。
+
+局所不等式の証明では \(u\le v\le w\) とする。
+もし \(2w\le uv\) なら、
+\((w-v)(w+v-uv)\le0\)、\(u^2\le v^2\)、\(u\ge3\) を合わせて
+\(C(u,v,w)<4\) を得るため矛盾する。従って \(0<uv<2w\) であり、
+\(-w<uv-w<w\) となる。
+この補題はCayley立方上の等式を要求しない。そのため負側の四つの三角形に
+同時に利用できる。
+
+符号の混在する三角形では、積が非負なら絶対値へ移しても \(C\) は変わらない。
+積が負の分岐は別の算術不等式で処理する。三角形の正値性を無断で仮定しない
+ことが符号分岐の検証上の要点である。
+\end{proof}
+
+\begin{lemma}[全整数六組の境界分割]
+\label{bp:neg-partition}
+\lean{SerreMarkov.BoundaryPatterns.coordinate_pattern_partition}
+\leanok
+任意の整数六組は次のいずれかに属する。
+\begin{enumerate}
+ \item ある座標が \(0\) である。
+ \item 全座標の絶対値が \(2\) 以上である。
+ \item ちょうど一つの座標の絶対値が \(1\) であり、ほかは \(2\) 以上である。
+ \item 異なる少なくとも二座標の絶対値が \(1\) である。
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\uses{bp:def-six}
+\leanok
+零座標の有無を判定する。なければ絶対値 \(1\) の座標の有無を判定し、それが
+二つ以上あるかで分ける。非零整数の絶対値は \(1\) または \(2\) 以上であるから
+尽くされる。この補題は解方程式も負側の仮定も使わない。
+
+最後の分岐は、実装では六座標から二つ選ぶ十五組を四種類にまとめる。
+\((a,d),(d,f),(f,c),(c,a)\) の巡回辺の隣接組、
+\(b,e\) のいずれかと巡回辺の組、\((a,f),(c,d)\) の対向組、
+\((b,e)\) の交差組である。位置に依存する後の算術補題へ接続できるように、
+単に「二つある」という個数条件より具体的な論理和を採用している。
+\end{proof}
+
+\begin{theorem}[負側の無条件局所還元]
+\label{bp:neg-step}
+\lean{SerreMarkov.NegativeClassificationFull.negative_step}
+\lean{SerreMarkov.NegativeAtLeastTwoReduction.negative_atLeastTwo_reduction}
+\lean{SerreMarkov.NegativeSingleUnitTwo.single_unit_two_reduction}
+\lean{SerreMarkov.NegativeDoubleUnitReduction.double_unit_reduction}
+\lean{SerreMarkov.ZeroUnitConic.zero_edge_family_or_drop}
+\leanok
+任意の \(z\in\Sol\) について、\(\tau(z)<0\) ならば \(P(z)\) が成立する。
+従って、標準族へ到達する有限語か、もとの全六成分の高さを厳密に減らす有限語が
+存在する。
+\end{theorem}
+\begin{proof}
+\uses{bp:neg-height,bp:neg-triangles,bp:neg-partition,bp:def-family,bp:def-reachable}
+\leanok
+補題\ref{bp:neg-partition}の四分岐を独立に閉じる。
+
+全成分の絶対値が \(2\) 以上の場合、基底の符号変更で第一行の
+\(a,b,c\) を正にする。この変更は高さを保存する。
+残りの \(d,e,f\) の八通りの符号分岐について、Cayley不等式と
+\(q_2^2=16\) の算術制約で同時更新の二辺を比較する。
+全辺が正で \(3\) 以上の内部では、最大辺の位置に応じて適切な変異または逆変異を
+選ぶ。\(2\) の辺がある境界では、対応するCayley評価は非増大になる場合があり、
+等号条件を分離する必要がある。等号なら二つの辺の一致から族へ移り、
+不一致なら一方が厳密に縮み、他方の非増大と合わせて高さが縮む。
+辺の位置の移動には、実際の変異語で実現される巡回操作を使う。
+
+単位辺がちょうど一つの場合、巡回辺の位置と \(b,e\) の位置を分ける。
+ほかの辺には \(2\) を含め、\(3\) 以上に制限しない。単位辺が二つ以上の場合は
+前補題の四種類に分け、平方和の恒等式による有界化または直接の降下を与える。
+対向単位辺の有限分岐と、交差単位辺の分岐は別々の補題で検査する。
+
+零辺の場合には、直交する基底対に隣接する零辺と、\(b,e\) の位置の交差零辺を
+区別する。交差零辺では、一度高さを増やさずに別位置へ移してから厳密降下を
+行うことがある。残る零辺と単位辺の組は、次に述べる二変数の二次曲線で閉じる。
+
+具体的には
+\[
+ U(d,c,e)=(1,0,c,d,e,4-dc),\qquad
+ c^2+e^2+(d^2-1)ce-4d(c+e)+d^2+9=0
+\]
+という切片を用いる。最初の二変異を交互に六回作用させる語は
+\[
+ U(d,c,e)\longmapsto U(d,e,4d-c-(d^2-1)e)
+\]
+であり、逆の六文字語も明示される。必要な \(d=2\) の分岐では、
+\(c^2+e^2+3ce-8(c+e)+13=0\) 上で、この二方向のいずれかが
+\(U\) の全六成分の高さを厳密に減らす。小さい \(c,e\) は有限の基本点へ移り、
+それぞれ具体的な語で族へ到達する。この二次曲線を単なるPell型方程式として
+解くだけでは到達語を与えられないため、六文字語の恒等式との接続が必要である。
+
+四分岐がそろった後の定理は、その論理和を場合分けするだけである。
+各分岐の係数は任意の整数であり、大きい係数を有限探索で省略していない。
+補助モジュールには局所降下を引数に取る条件付きの帰納法定理も存在するが、
+ここで対応付けた最終定理には、そのような追加仮定はない。
+\end{proof}
+
+\begin{theorem}[負側全解の族への到達]
+\label{bp:neg-existence}
+\lean{SerreMarkov.NegativeClassificationFull.negative_family_surjectivity}
+\leanok
+\(z\in\Sol\)、\(\tau(z)<0\) ならば
+\[
+ \exists x,y\in\Z,\qquad\Reach(z,\F(x,y)).
+\]
+\end{theorem}
+\begin{proof}
+\uses{bp:neg-height,bp:neg-step,bp:intrinsic-kind}
+\leanok
+\(h(z)\) に関する強帰納法で示す。局所還元の第一分岐では既に結論である。
+第二分岐の語 \(W\) に対して \(w=Wz\) とおく。
+到達可能性による解方程式の保存から \(w\in\Sol\) であり、
+内在型の保存から \(\tau(w)<0\) である。
+\(h(w)<h(z)\) によって帰納法の仮定が適用でき、\(w\) から族への語が得られる。
+これを \(W\) に連結して終了する。
+
+高さの下降は一つの大域的な自然数値関数に対して行われるため、境界切片ごとの
+補助高さの間を往復して無限ループする可能性はない。また、全段階で一定の長さの
+語を探すという仮定もない。有限語の存在と自然数高さの整礎性だけが、
+大域的な停止に必要な入力である。
+\end{proof}
+
+\subsection{標準族の正規化と軌道の一意性}
+
+族に到達しただけでは分類は終わらない。\(x+y\) の符号、パラメータの順序、
+整数平行移動を取り除いた後に、異なるパラメータが別の変異軌道に属することを
+証明しなければならない。後者は格子同型による分離では不十分である。
+同じ格子に複数の変異軌道が入ることが、後のファイバーの算術の主題となる。
+
+\begin{theorem}[任意の整数族パラメータの正規化]
+\label{bp:family-normalize}
+\lean{SerreMarkov.family_shift_int}
+\lean{SerreMarkov.family_normalize}
+\lean{SerreMarkov.family_normalize_degenerate}
+\leanok
+\(x+y\ne0\) のとき、ある \(x',y'\in\Z\) が存在して
+\[
+ \Reach(\F(x,y),\F(x',y')),\qquad
+ x'\ge y'\ge0,\qquad x'+y'=|x+y|.
+\]
+\(x+y=0\) のときは、ある \(k\ge0\) について
+\(\Reach(\F(x,y),\F(k,-k))\) である。
+\end{theorem}
+\begin{proof}
+\uses{bp:def-family,bp:def-reachable}
+\leanok
+\(m=x+y>0\) とする。族の交換と反転を実現する具体的な語を連結すると、
+\(y\mapsto y+m\) と \(y\mapsto y-m\) を実現できる。
+自然数回の反復をリストの連結で証明した後、正負の整数に分けることで
+\(y\mapsto y+nm\) をすべての \(n\in\Z\) について実現する。
+\(n=-\lfloor y/m\rfloor\) を選ぶと第二パラメータは余り
+\(r=y\bmod m\)、\(0\le r<m\) になる。
+\(2r\le m\) ならそのまま、そうでなければ二パラメータを交換して
+\((x',y')=(r,m-r)\) とする。
+
+負の和は同時符号反転により正の和へ移す。零の和は
+\((x,y)=(x,-x)\) なので、必要なら同時符号反転して \(k=|x|\) とすればよい。
+整数の除算と剰余にはmathlibの全整数に対する定理を用いるので、負の第二パラメータ
+も例外ではない。平行移動を一つの抽象的な群作用として導入するだけでなく、
+各整数回数について有限の変異語を構成している。
+\end{proof}
+
+\begin{proposition}[族の整数三根商]
+\label{bp:family-quotient}
+\lean{SerreMarkov.FamilyReflectionBridge.family_symmetric_quotient}
+\lean{SerreMarkov.FamilyReflectionBridge.project_reflection}
+\lean{SerreMarkov.UniversalRoot.rootGram_det}
+\leanok
+\(\F(x,y)\) の対称形式は整数射影
+\[
+ P=\begin{pmatrix}1&0&0&0\\0&0&0&1\\0&1&1&0\end{pmatrix}
+\]
+を通じて
+\[
+ H_{\F(x,y)}=P^{\mathsf T}K(x,y)P,
+ \qquad
+ K(x,y)=\begin{pmatrix}2&-2&-x\\-2&2&-y\\-x&-y&2\end{pmatrix}
+\]
+と因数分解される。四つの基底反射はこの射影によって三つの根反射に移り、
+中央二根は同じ第三根へ移る。\(x+y\ne0\) なら
+\(\det K(x,y)=-2(x+y)^2\ne0\) である。
+\end{proposition}
+\begin{proof}
+\uses{bp:def-family,bp:reflection-hurwitz}
+\leanok
+六成分の族の公式を対称行列へ代入し、積を成分ごとに計算する。
+標準根 \(e_i\) の反射は
+\(s_i(v)=v-\langle v,e_i\rangle e_i\) である。
+四次元の基底反射とこの三次元反射について
+\(Ps_j=s_{\rho(j)}P\) を直接確認すれば、任意の反射語への整合性は語長の帰納法で
+従う。\(P\) は整数の右逆を持つので、商の操作にも有理数への拡大は不要である。
+
+ここで三根を \(0,1,2\) と添字付け、最初の二根を縦根、第三根を円根と呼ぶ。
+この名称は語の二種類を区別するためのものであり、双曲平面内の鏡の実現を
+形式化の入力にしているわけではない。
+\end{proof}
+
+\begin{lemma}[反射語の忠実性と単位円係数の剛性]
+\label{bp:family-word-rigidity}
+\lean{SerreMarkov.UniversalReflection.rootWordMatrix_faithful_reduced}
+\lean{SerreMarkov.RootWordGeometry.rootWordMatrix_orderTwo_root}
+\lean{SerreMarkov.UniversalReflection.circle_unit_vertical}
+\leanok
+\(x,y\ge2\) とする。\(K(x,y)\) の三根反射について、非空の既約語は恒等行列に
+ならない。その反射群の非自明な位数二の元は、ある標準根を反射語で移した根に
+関する反射である。
+
+さらに、ある標準根 \(e_k\) を任意の反射語で移した根の円係数の絶対値が \(1\)
+ならば、\(k=2\) であり、その根は
+\[
+ w(\varepsilon e_2),\qquad \varepsilon\in\{1,-1\},
+\]
+と書ける。ここで \(w\) は縦根の反射 \(s_0,s_1\) のみからなる語である。
+\end{lemma}
+\begin{proof}
+\uses{bp:family-quotient}
+\leanok
+反射の座標公式では、選んだ座標だけが
+\(-v_i+\sum_{j\ne i}w_{ij}v_j\) に更新され、\(w_{ij}\ge2\) である。
+標準根から出発し、連続する同じ文字を消去した語に沿って、非負性と最大係数の
+位置を帰納的に追う。次の文字を作用させると、その位置の係数が増大する。
+一度選択された非初期座標は \(2\) 以上となるため、係数 \(1\) は初期座標が
+選択されずに残っている場合にしか生じない。これは非空既約語の作用の非自明性も
+証明する。
+
+抽象語の段階では、\(s_i^2=1\) による隣接文字の消去をリストの再帰として扱う。
+忠実性を使えば、位数二の既約語は左右から同じ文字を取り除くことができ、
+最終的に一文字の共役となる。この共役を根反射の共役公式で三次元行列へ移す。
+
+任意語に対する円係数の主張では、語の消去と初期根自身の反射を処理する。
+それによる全体符号を \(\varepsilon\) に吸収すると、係数 \(1\) の剛性が適用でき、
+円根の反射を含まない縦語が残る。既約語だけに前提を限定せず、実際の変異から
+生じる任意語へ適用できる形が必要である。
+\end{proof}
+
+\begin{proposition}[大きい族パラメータの符号付き合同]
+\label{bp:family-congruence}
+\lean{SerreMarkov.FamilyReflectionWords.reachable_circle_root}
+\lean{SerreMarkov.FamilyReflectionArithmetic.vertical_word_circle_congruence}
+\lean{SerreMarkov.FamilyUniqueness.large_family_signed_congruence}
+\leanok
+\(m>0\)、\(m-y\ge2\)、\(y\ge2\) とする。
+\[
+ \Reach(\F(m-y,y),\F(m-y',y'))
+ \quad\Longrightarrow\quad
+ m\mid(y-y')\ \text{または}\ m\mid(y+y').
+\]
+この命題は \(y'\) の符号や正規化範囲を仮定しない。
+\end{proposition}
+\begin{proof}
+\uses{bp:family-quotient,bp:family-word-rigidity,bp:reflection-hurwitz}
+\leanok
+変異語による整数基底変更 \(B\) は、対称形式を合同で移すだけでなく、二つの
+反射群を共役で移す。族の整数旗に適合した形を使うと、三次元商の行列 \(Q\) は
+円係数に関して \((0,0,\varepsilon)\)、\(\varepsilon=\pm1\) という最終行を持つ。
+従って円根の像は円係数 \(\pm1\) を持ち、その反射はもとの反射群に属する。
+補題\ref{bp:family-word-rigidity}によって、その根は縦語で移した
+\(\pm e_2\) と書ける。
+
+ここからは整数の内積だけを用いる。
+\[
+ \langle e_0,v\rangle+\langle e_1,v\rangle=-mv_2.
+\]
+\(s_0\) は \(\langle e_0,v\rangle\) の符号を反転し、\(s_1\) も法 \(m\) では
+同じ符号反転をする。従って任意の縦語はこの内積を法 \(m\) で一つの符号まで
+保存する。
+一方、\(q_2=0\) かつ \(\langle q,q\rangle=2\) の根では
+\(2(q_0-q_1)^2=2\) なので \(q_0-q_1=\pm1\) であり、
+\(q\) との内積も \(e_0\) との内積と法 \(m\) で符号まで一致する。
+
+\(Qe_0\) と \(Qe_2\) の内積は、新しい族での内積
+\(-(m-y')\) である。これと、もとの円根の内積 \(-(m-y)\) を比較して
+\(y'\equiv\pm y\pmod m\) を得る。
+整数格子合同だけでは一般に平方合同しか得られないが、反射群の共役という
+変異語固有の情報によって符号付き一次合同まで強めている。
+\end{proof}
+
+\begin{theorem}[全正規化族の変異軌道一意性]
+\label{bp:family-unique}
+\lean{SerreMarkov.FamilyUniqueness.normalized_family_reachable_iff}
+\lean{SerreMarkov.FamilyUniqueness.normalized_positive_totals_reachable_iff}
+\lean{SerreMarkov.NegativeClassification.normalized_negative_pair_injective}
+\leanok
+\(m,m'>0\)、\(0\le2y\le m\)、\(0\le2y'\le m'\) とする。このとき
+\[
+ \Reach(\F(m-y,y),\F(m'-y',y'))
+ \quad\Longleftrightarrow\quad m=m'\ \text{かつ}\ y=y'.
+\]
+従って、\(x\ge y\ge0\)、\(x+y>0\) の領域内では族のパラメータ対が
+変異軌道の完全不変量である。
+\end{theorem}
+\begin{proof}
+\uses{bp:family-congruence,bp:intrinsic-frame,bp:def-family}
+\leanok
+到達可能性が与える整数格子同型から、正の和 \(m,m'\) が一致する。
+これは族の内在的な旗の不変量であり、和が負の場合の余分な符号をここでは
+正値性によって取り除いている。
+
+\(y\ge2\) の場合は命題\ref{bp:family-congruence}を適用する。
+正規化範囲では \(|y-y'|<m\) なので、差が \(m\) の倍数なら零である。
+和が倍数の場合、\(0\le y+y'\le m\) であり、端点 \(0,m\) のいずれでも
+\(y=y'\) となる。
+
+三根の係数増大を使えない \(y=0,1\) は独立に閉じる。
+\(y=0\) では族に対する整除不変量が \(m\mid y'\) を与えるため、正規化範囲から
+\(y'=0\) となる。\(y=1\)、\(m\ge5\) では法 \(m\) の明示された有限状態集合を
+用いる。集合に入る六組へ任意の変異生成元を作用させても再び集合に入り、その中で
+族の形を持つ点のパラメータは \(\pm1\pmod m\) に限られる。
+一手の閉性を任意語へ持ち上げ、正規化範囲から \(y'=1\) を得る。
+この有限集合の閉性は任意の \(m\ge5\) についての恒等式で検査されるので、
+有限個の法を実験した結果ではない。
+
+\(m<5\) は正規化範囲自体が有限であり、\(m=4\) に残る二つの正パラメータは
+整数格子合同からの平方条件で分離する。必要なら到達語を逆にして、零や単位の
+パラメータを始点に置く。これで素数・合成数・奇数・偶数の和をすべて含む。
+\end{proof}
+
+\subsection{負側の完全分類と内在不変量}
+
+\begin{theorem}[負側の一意分類]
+\label{bp:neg-classification}
+\lean{SerreMarkov.NegativeClassificationFull.negative_classification}
+\lean{SerreMarkov.NegativeClassificationFull.negative_classification_with_invariants}
+\lean{SerreMarkov.NegativeClassificationFull.negative_iff_normalized_reachable}
+\leanok
+\(z\in\Sol\)、\(\tau(z)<0\) とする。このとき
+\[
+ \exists!\,(x,y)\in\Z^2,
+ \qquad x\ge y\ge0,\quad x+y>0,\quad\Reach(z,\F(x,y)).
+\]
+この唯一の代表に対して、\(z\) の任意の原始整数フレームの内在不変量は
+\[
+ A=-1,\qquad\kappa=x+y
+\]
+となる。逆に、正規化されたこの族へ到達する解は負側に属する。
+\end{theorem}
+\begin{proof}
+\uses{bp:neg-existence,bp:family-normalize,bp:family-unique,bp:intrinsic-frame,bp:intrinsic-kind}
+\leanok
+定理\ref{bp:neg-existence}でまず任意の族 \(\F(x,y)\) に到達する。
+\(x+y=0\) なら到達先は三乗零であり、冪零性の変異不変性によって始点も
+三乗零となる。しかし負側では \(\tau(z)<0\) なので退化側ではなく矛盾する。
+従って \(x+y\ne0\) であり、定理\ref{bp:family-normalize}で正規化できる。
+二つの正規化候補があれば、始点を経由してそれらの族が到達可能となるので、
+定理\ref{bp:family-unique}から二対のパラメータは一致する。
+
+正規化された族のフレームは具体的な整数基底として構成済みであり、直接計算で
+\(A=-1\)、\(\kappa=x+y\) を持つ。到達語による格子同型と、フレーム選択に
+よらない不変性を使えば、始点のすべてのフレームに同じ値が移る。
+代表の存在だけでなく、任意のフレームに対する全称結論である。
+逆向きでは、正の和の族が負側であることを計算し、内在型の変異不変性で始点へ戻す。
+\end{proof}
+
+ここまでの結果は、負側の存在、負側の一意性、退化側の存在と一意性をそれぞれ
+独立した経路で証明した後に結合している。分類の最終定理は局所降下性や幾何的な
+基本領域定理を未証明の引数として持たない。原稿の証明と比較すると、双曲幾何が
+担っていた存在と軌道分離の二役が、前者では整数不等式と強帰納法、後者では
+反射語の剛性と合同不変集合へ置き換えられている。

@@ -1,0 +1,6 @@
+([SerreMarkov.Generator.i1], SerreMarkov.CanonicalRepresentatives.Canonical.negative (9, 4))
+([], SerreMarkov.CanonicalRepresentatives.Canonical.degenerate 17)
+([], SerreMarkov.CanonicalRepresentatives.Canonical.positive 0)
+false
+true
+some [SerreMarkov.Generator.i1]

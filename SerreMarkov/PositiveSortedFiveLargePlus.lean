@@ -154,7 +154,7 @@ theorem certificate (B C D E F : ℤ)
   have hG0 : 0≤G0 := by
     have h := hW0.2.2.1
     dsimp only [G0]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP0 : 0≤M0*G0 := mul_nonneg hM0 hG0
 
@@ -165,7 +165,7 @@ theorem certificate (B C D E F : ℤ)
   have hG1 : 0≤G1 := by
     have h := PositiveTriangleLower.chamber_abd_defect_bound W0 hW0
     dsimp only [G1]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP1 : 0≤M1*G1 := mul_nonneg hM1 hG1
 
@@ -176,7 +176,7 @@ theorem certificate (B C D E F : ℤ)
   have hG2 : 0≤G2 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W0 hW0
     dsimp only [G2]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP2 : 0≤M2*G2 := mul_nonneg hM2 hG2
 
@@ -195,7 +195,7 @@ theorem certificate (B C D E F : ℤ)
   have hG4 : 0≤G4 := by
     have h := hW1.2.2.2.2.1
     dsimp only [G4]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP4 : 0≤M4*G4 := mul_nonneg hM4 hG4
 
@@ -214,7 +214,7 @@ theorem certificate (B C D E F : ℤ)
   have hG6 : 0≤G6 := by
     have h := hW2.2.2.2.2.2.1
     dsimp only [G6]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP6 : 0≤M6*G6 := mul_nonneg hM6 hG6
 
@@ -225,7 +225,7 @@ theorem certificate (B C D E F : ℤ)
   have hG7 : 0≤G7 := by
     have h := hW2.2.2.2.2.2.2.1
     dsimp only [G7]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP7 : 0≤M7*G7 := mul_nonneg hM7 hG7
 
@@ -252,7 +252,7 @@ theorem certificate (B C D E F : ℤ)
   have hG10 : 0≤G10 := by
     have h := PositiveTriangleLower.chamber_abd_defect_bound W3 hW3
     dsimp only [G10]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP10 : 0≤M10*G10 := mul_nonneg hM10 hG10
 
@@ -263,7 +263,7 @@ theorem certificate (B C D E F : ℤ)
   have hG11 : 0≤G11 := by
     have h := hW4.2.2.2.2.1
     dsimp only [G11]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP11 : 0≤M11*G11 := mul_nonneg hM11 hG11
 
@@ -274,7 +274,7 @@ theorem certificate (B C D E F : ℤ)
   have hG12 : 0≤G12 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W4 hW4
     dsimp only [G12]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP12 : 0≤M12*G12 := mul_nonneg hM12 hG12
 
@@ -285,7 +285,7 @@ theorem certificate (B C D E F : ℤ)
   have hG13 : 0≤G13 := by
     have h := hW5.2.2.2.1
     dsimp only [G13]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP13 : 0≤M13*G13 := mul_nonneg hM13 hG13
 
@@ -296,7 +296,7 @@ theorem certificate (B C D E F : ℤ)
   have hG14 : 0≤G14 := by
     have h := hW5.2.2.2.2.1
     dsimp only [G14]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP14 : 0≤M14*G14 := mul_nonneg hM14 hG14
 
@@ -315,7 +315,7 @@ theorem certificate (B C D E F : ℤ)
   have hG16 : 0≤G16 := by
     have h := hW6.2.2.2.1
     dsimp only [G16]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP16 : 0≤M16*G16 := mul_nonneg hM16 hG16
 
@@ -326,7 +326,7 @@ theorem certificate (B C D E F : ℤ)
   have hG17 : 0≤G17 := by
     have h := hW7.2.2.2.2.2.1
     dsimp only [G17]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP17 : 0≤M17*G17 := mul_nonneg hM17 hG17
 
@@ -345,7 +345,7 @@ theorem certificate (B C D E F : ℤ)
   have hG19 : 0≤G19 := by
     have h := hW8.2.2.2.2.2.2.1
     dsimp only [G19]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP19 : 0≤M19*G19 := mul_nonneg hM19 hG19
 
@@ -364,7 +364,7 @@ theorem certificate (B C D E F : ℤ)
   have hG21 : 0≤G21 := by
     have h := hW9.2.2.2.2.1
     dsimp only [G21]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP21 : 0≤M21*G21 := mul_nonneg hM21 hG21
 
@@ -375,7 +375,7 @@ theorem certificate (B C D E F : ℤ)
   have hG22 : 0≤G22 := by
     have h := PositiveTriangleLower.chamber_abd_defect_bound W10 hW10
     dsimp only [G22]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP22 : 0≤M22*G22 := mul_nonneg hM22 hG22
 
@@ -394,7 +394,7 @@ theorem certificate (B C D E F : ℤ)
   have hG24 : 0≤G24 := by
     have h := hW11.2.2.2.1
     dsimp only [G24]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP24 : 0≤M24*G24 := mul_nonneg hM24 hG24
 
@@ -405,7 +405,7 @@ theorem certificate (B C D E F : ℤ)
   have hG25 : 0≤G25 := by
     have h := PositiveTriangleLower.chamber_bcf_defect_bound W11 hW11
     dsimp only [G25]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP25 : 0≤M25*G25 := mul_nonneg hM25 hG25
 
@@ -424,7 +424,7 @@ theorem certificate (B C D E F : ℤ)
   have hG27 : 0≤G27 := by
     have h := hW12.2.2.2.2.2.2.1
     dsimp only [G27]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP27 : 0≤M27*G27 := mul_nonneg hM27 hG27
 
@@ -435,7 +435,7 @@ theorem certificate (B C D E F : ℤ)
   have hG28 : 0≤G28 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W12 hW12
     dsimp only [G28]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP28 : 0≤M28*G28 := mul_nonneg hM28 hG28
 
@@ -454,7 +454,7 @@ theorem certificate (B C D E F : ℤ)
   have hG30 : 0≤G30 := by
     have h := hW13.2.2.2.1
     dsimp only [G30]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP30 : 0≤M30*G30 := mul_nonneg hM30 hG30
 
@@ -465,7 +465,7 @@ theorem certificate (B C D E F : ℤ)
   have hG31 : 0≤G31 := by
     have h := PositiveTriangleLower.chamber_bcf_defect_bound W13 hW13
     dsimp only [G31]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP31 : 0≤M31*G31 := mul_nonneg hM31 hG31
 
@@ -484,7 +484,7 @@ theorem certificate (B C D E F : ℤ)
   have hG33 : 0≤G33 := by
     have h := hW14.2.2.2.2.1
     dsimp only [G33]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP33 : 0≤M33*G33 := mul_nonneg hM33 hG33
 
@@ -503,7 +503,7 @@ theorem certificate (B C D E F : ℤ)
   have hG35 : 0≤G35 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W15 hW15
     dsimp only [G35]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP35 : 0≤M35*G35 := mul_nonneg hM35 hG35
 
@@ -522,7 +522,7 @@ theorem certificate (B C D E F : ℤ)
   have hG37 : 0≤G37 := by
     have h := hW16.2.2.2.1
     dsimp only [G37]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP37 : 0≤M37*G37 := mul_nonneg hM37 hG37
 
@@ -533,7 +533,7 @@ theorem certificate (B C D E F : ℤ)
   have hG38 : 0≤G38 := by
     have h := hW17.2.2.2.1
     dsimp only [G38]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP38 : 0≤M38*G38 := mul_nonneg hM38 hG38
 
@@ -552,7 +552,7 @@ theorem certificate (B C D E F : ℤ)
   have hG40 : 0≤G40 := by
     have h := hW18.2.2.2.1
     dsimp only [G40]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP40 : 0≤M40*G40 := mul_nonneg hM40 hG40
 
@@ -571,7 +571,7 @@ theorem certificate (B C D E F : ℤ)
   have hG42 : 0≤G42 := by
     have h := hW19.2.2.2.1
     dsimp only [G42]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP42 : 0≤M42*G42 := mul_nonneg hM42 hG42
 
@@ -598,7 +598,7 @@ theorem certificate (B C D E F : ℤ)
   have hG45 : 0≤G45 := by
     have h := hW20.2.2.2.2.2.2.1
     dsimp only [G45]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP45 : 0≤M45*G45 := mul_nonneg hM45 hG45
 
@@ -609,7 +609,7 @@ theorem certificate (B C D E F : ℤ)
   have hG46 : 0≤G46 := by
     have h := PositiveTriangleLower.chamber_def_defect_bound W20 hW20
     dsimp only [G46]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP46 : 0≤M46*G46 := mul_nonneg hM46 hG46
 
@@ -628,7 +628,7 @@ theorem certificate (B C D E F : ℤ)
   have hG48 : 0≤G48 := by
     have h := hW21.2.2.2.2.2.2.1
     dsimp only [G48]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP48 : 0≤M48*G48 := mul_nonneg hM48 hG48
 
@@ -639,7 +639,7 @@ theorem certificate (B C D E F : ℤ)
   have hG49 : 0≤G49 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W21 hW21
     dsimp only [G49]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP49 : 0≤M49*G49 := mul_nonneg hM49 hG49
 
@@ -658,7 +658,7 @@ theorem certificate (B C D E F : ℤ)
   have hG51 : 0≤G51 := by
     have h := hW22.2.2.2.1
     dsimp only [G51]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP51 : 0≤M51*G51 := mul_nonneg hM51 hG51
 
@@ -669,7 +669,7 @@ theorem certificate (B C D E F : ℤ)
   have hG52 : 0≤G52 := by
     have h := PositiveTriangleLower.chamber_bcf_defect_bound W22 hW22
     dsimp only [G52]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP52 : 0≤M52*G52 := mul_nonneg hM52 hG52
 
@@ -696,7 +696,7 @@ theorem certificate (B C D E F : ℤ)
   have hG55 : 0≤G55 := by
     have h := hW23.2.2.2.2.2.2.1
     dsimp only [G55]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP55 : 0≤M55*G55 := mul_nonneg hM55 hG55
 
@@ -723,7 +723,7 @@ theorem certificate (B C D E F : ℤ)
   have hG58 : 0≤G58 := by
     have h := hW24.2.2.2.2.2.2.1
     dsimp only [G58]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP58 : 0≤M58*G58 := mul_nonneg hM58 hG58
 
@@ -742,7 +742,7 @@ theorem certificate (B C D E F : ℤ)
   have hG60 : 0≤G60 := by
     have h := hW25.2.2.2.2.2.2.1
     dsimp only [G60]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP60 : 0≤M60*G60 := mul_nonneg hM60 hG60
 
@@ -753,7 +753,7 @@ theorem certificate (B C D E F : ℤ)
   have hG61 : 0≤G61 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W25 hW25
     dsimp only [G61]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP61 : 0≤M61*G61 := mul_nonneg hM61 hG61
 
@@ -772,7 +772,7 @@ theorem certificate (B C D E F : ℤ)
   have hG63 : 0≤G63 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W26 hW26
     dsimp only [G63]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP63 : 0≤M63*G63 := mul_nonneg hM63 hG63
 
@@ -791,7 +791,7 @@ theorem certificate (B C D E F : ℤ)
   have hG65 : 0≤G65 := by
     have h := hW27.2.2.2.2.2.2.2
     dsimp only [G65]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP65 : 0≤M65*G65 := mul_nonneg hM65 hG65
 
@@ -802,7 +802,7 @@ theorem certificate (B C D E F : ℤ)
   have hG66 : 0≤G66 := by
     have h := hW28.2.2.2.1
     dsimp only [G66]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP66 : 0≤M66*G66 := mul_nonneg hM66 hG66
 
@@ -813,7 +813,7 @@ theorem certificate (B C D E F : ℤ)
   have hG67 : 0≤G67 := by
     have h := PositiveTriangleLower.chamber_abd_defect_bound W28 hW28
     dsimp only [G67]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP67 : 0≤M67*G67 := mul_nonneg hM67 hG67
 
@@ -840,7 +840,7 @@ theorem certificate (B C D E F : ℤ)
   have hG70 : 0≤G70 := by
     have h := hW29.2.2.2.2.2.2.1
     dsimp only [G70]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP70 : 0≤M70*G70 := mul_nonneg hM70 hG70
 
@@ -851,7 +851,7 @@ theorem certificate (B C D E F : ℤ)
   have hG71 : 0≤G71 := by
     have h := PositiveTriangleLower.chamber_ace_defect_bound W29 hW29
     dsimp only [G71]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 
   have hP71 : 0≤M71*G71 := mul_nonneg hM71 hG71
 
@@ -950,7 +950,7 @@ theorem certificate (B C D E F : ℤ)
   have hG83 : 0≤G83 := by
     have h := hW30.2.2.2.2.1
     dsimp only [G83]
-    omega
+    exact sub_nonneg.mpr h
 
   have hP83 : 0≤M83*G83 := mul_nonneg hM83 hG83
 

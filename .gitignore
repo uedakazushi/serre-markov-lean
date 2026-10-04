@@ -1,5 +1,17 @@
 .lake/
-*.olean
-*.ilean
-*.log
+.elan/
+__pycache__/
+*.pyc
 .DS_Store
+blueprint/print/*.aux
+blueprint/print/*.log
+blueprint/print/*.out
+blueprint/print/*.toc
+blueprint/print/*.fls
+blueprint/print/*.fdb_latexmk
+blueprint/src/blueprint-local-fonts.tex
+_site/
+# Generated in CI; archived copies may still be included in the source ZIP.
+blueprint/web/
+blueprint/print/
+blueprint/verification/

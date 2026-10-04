@@ -1,43 +1,23 @@
-# 回収時の確認状況
+# 完成確認状況
 
-## ビルドと最後の成功
+2026-10-04の再開時に標準ビルドと公理監査を再確認した。結果: exit 0、3470 jobs、8286 compiled theorem declarations、1232 definition/opaque/axiom declarations。追加の分類仮定・`sorry`・`admit`・追加公理・`native_decide` を使わない。
 
-- 現在の標準 `lake build`: **成功**、exit 0、3460 jobs。
-- 標準公理監査: **成功**。8059 compiled theorem declarations、1118 definition/opaque/axiom declarations。自動生成宣言を含むので原稿の定理数ではない。
-- 許可された依存公理: `propext`, `Classical.choice`, `Quot.sound`。
-- 全作業Leanソース（依存配布物を除く）のコメント・文字列を除外した検査: `sorry`, `admit`, `axiom`, `sorryAx`, `native_decide` は **0件**。PLACEHOLDERS.json。
-- 追加の全分類モジュールのビルド: **未確認**。大きな証明書の検証完了を待ち続けず、回収を優先して中断。拡張ビルドのログを保存。標準ビルド外ソースを完成扱いしない。
+| 原稿の結論 | 最終API | 状況 |
+|---|---|---|
+| 定理A、全三型の一意な代表系 | `FullClassification.full_classification`, `canonical_orbit_map_bijective` | 無条件で検証済み |
+| 正側の五軌道 | `PositiveClassificationFull.positive_classification` | 高さ・係数・下降仮説なし |
+| 定理B、全ファイバー有限かつ大きさ非有界 | `FullClassification.finite_fibers_and_unbounded` | 真の解軌道忘却写像で検証済み |
+| 素数平方冪の個数と明示代表 | `prime_square_power_fiber_card`, `prime_square_power_unique_representative` | 前向き写像の明示式と逆式も検証済み |
+| 奇数法の一般積公式 | `NegativeFamilyOrbitFibers.odd_fullFiber_explicit_card` | 全負側ファイバーで検証済み |
+| 一般の族の格子同型判定 | `family_positive_isometry_iff` | 偶数法の同時合同も保持 |
+| 停止する変異同値・格子同型判定 | `mutationEquivalentTest_correct`, `latticeEquivalentTest_correct` | `Solution` 型を入力、実語の正しさも検証済み |
 
-## 完成確認済みの主な数学
+実行例では、変異された族から逆変異語が返り、`F(9,0)` と `F(6,3)` に対して変異同値=false、格子同型=true が得られた。効率・計算量上界は主張しない。
 
-| 成果 | 状況 |
-|---|---|
-| 変異・組み紐関係・整数基底変更・反射Hurwitz対応 | 完成 |
-| 二方程式と shifted Serre の四乗零の同値 | 完成 |
-| 正則原始旗、適合整数基底、RR、不変量 A, κ の一意性 | 完成 |
-| 負側の無条件の一般分類・代表一意性 | 完成 |
-| 退化側の完全分類・格子ファイバー一元性・Jordan型 | 完成 |
-| family の全整数正規化・格子同型判定・一般変異一意性 | 完成 |
-| 奇数法の根数積公式、真の負側全ファイバーの正確な個数 | 完成 |
-| 全負側ファイバー有限性と全称の非有界性 | 完成 |
-| PSL₂(ℤ)提示同型・条件付き指数12部分群の五共役類 | 完成 |
-| 実正側偶語群の共通整数化 | 完成 |
-| 高さ37以下の正側五軌道分類・多くの終端断面排除 | 完成 |
-| 正側の無制限全分類・全解全分類 | 実装ソースあり。標準ビルド外で検証完了未確認 |
-| 全格子ファイバー有限性・一般停止判定の無条件版 | 同上。正側完全性を引数とする版は完成 |
+`isSolution` は原稿と同じ二方程式であり、`Reachable` は三変異・逆変異・四符号変更だけの実語である。原稿の反対同値や任意置換を追加していない。最終定理の依存閉包に循環や未証明の完成仮定がないことも静的レビューした。
 
-詳細な宣言一覧は DECLARATIONS.md/json、検証済みカーネル定理名は VERIFIED_THEOREMS.txt、ソース位置と完成確認は COMPILED_SOURCE_DECLARATIONS.json。全宣言一覧の5180件はコンパイル成功件数ではない。
+原稿の全補題の形式化は完成範囲外。詳しい境界は `GAPS.md`、主定理の各依存は `STATUS_ja.md` と `PLAN_ja.md`。
 
-## 作業用ファイル
+## Lean Blueprint
 
-個別確認32件: 成功5件、エラー2件、12秒で時間切れ25件。未確認の残りも存在する。AdjEntryTest.lean と CoreCheck.lean のエラー全文は COMPILE_ERRORS.md と probe-logs に保存。時間切れを失敗や未証明項とみなさない。
-
-## 古い報告の扱い
-
-STATUS_ja.md / README.md は最後の追加実装より古い。負側完全分類はその後すでに完成しており、外部会話の「零辺・単位辺が未完」という段階から進展している。正側全分類ソースも存在するが、標準監査には含まれない。この区別を今回の確定状況とする。
-
-## 保存範囲
-
-既存成果782ファイルのソース回収、コンパイル済みキャッシュ、引継ぎ資料とログを保存。配布Lean本体・mathlib等依存キャッシュは source archive に含めず、依存固定ファイルを保持した。プロジェクトはgit管理ではない。SOURCE_STABILITY.json にスナップショット以降の元ソース変更検査を収録。
-
-定義等の完全なカーネル宣言名一覧: VERIFIED_DEFINITIONS.txt（1118件）。追加の DefaultDeclarationAudit の再実行も exit 0、公理監査成功。これは監査だけで新しい数学的定理を追加していない。
+`blueprint/src` に、基本定義と内在的不変量、負側・退化型・族の一意性、正側の完全分類、ファイバーと停止算法、原稿対応と検証範囲を解説する日本語Blueprintを追加した。標準 `\lean`・`\leanok`・`\uses` を使い、対応宣言の実在と推移的公理依存を独立に監査する。生成PDFとHTML、依存グラフ、同梱ソース行リンク、再生成スクリプトは `blueprint/README.md` を参照。Lean数学ソースの変更はない。

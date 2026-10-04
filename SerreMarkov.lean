@@ -139,3 +139,4 @@ import SerreMarkov.PositiveSortedFour
 import SerreMarkov.PositiveRepresentativeInvariants
 import SerreMarkov.PositiveSortedTerminalSmall
 import SerreMarkov.CanonicalLatticeDecision
+import SerreMarkov.FullClassification

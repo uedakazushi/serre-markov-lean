@@ -3,6 +3,7 @@ import SerreMarkov.PositiveSortedFiveBoundary
 import SerreMarkov.PositiveSortedFiveLarge
 import SerreMarkov.PositiveSortedLarge
 import SerreMarkov.PositiveRepresentativeInvariants
+import SerreMarkov.PositiveReduction
 
 /-! # Unrestricted positive classification
 
@@ -35,6 +36,14 @@ theorem positive_classification (z : Six) (hz : isSolution z)
     ∃! r : Fin 5, Reachable z (PositiveExamples.representative r) :=
   positive_classification_of_sorted_terminal
     (fun w hw ht hs => sorted_terminal_classification w hw ht hs) z hz hp
+
+/-- The previously isolated bounded-reduction obligation is discharged for
+every positive solution, with no initial coefficient or height bound. -/
+theorem positive_reaches_bounded (z : Six) (hz : isSolution z)
+    (hp : 0<IntrinsicSigns.thirdMinorSum z) :
+    ∃ w : Six, PositiveBounded.Bounded w ∧ Reachable z w :=
+  (PositiveReduction.sporadic_classification_iff_bounded_reachability z).mp
+    (positive_classification z hz hp)
 
 theorem positive_classification_with_invariants (z : Six) (hz : isSolution z)
     (hp : 0<IntrinsicSigns.thirdMinorSum z) :

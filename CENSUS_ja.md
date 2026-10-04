@@ -43,3 +43,5 @@
 `CensusAudit.lean` の `#print axioms` により、完全列挙・証明書列との同一性・全証明書の検査・主定理は `propext`, `Classical.choice`, `Quot.sound` のみに依存することを確認しました。`sorryAx` や `Lean.ofReduceBool` は含まれません。
 
 抽象群の橋と部分群分類は `lake build SerreMarkov.ModularCosets`、その公理監査は `lake env lean ModularCosetsAudit.lean` で再検査できます。こちらも使用公理は同じ三つのみです。
+
+ここで未形式化として挙げた正側格子から指数・固定点・カスプ条件への帰着と、群共役から実変異軌道への復元は、原稿の元の幾何的証明を再現するための工程である。主分類は最小高さ・順序帰着・普遍多項式証明書・有限終端分類を使う `PositiveClassificationFull` の代数的経路で完成し、`FullClassification` に全三型・ファイバー・決定手続きへ接続したため、この幾何的工程を必要としない。この有限 census、明示条件下の部分群分類、無条件の正側主分類は、それぞれ別の定理として区別する。原稿の幾何補題や dg 付録まで形式化済みという意味ではない。

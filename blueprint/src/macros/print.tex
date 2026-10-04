@@ -1,0 +1,22 @@
+\newcommand{\leanok}{}
+\newcommand{\notready}{}
+\newcommand{\mathlibok}{}
+\newcommand{\discussion}[1]{}
+\ExplSyntaxOn
+\NewDocumentCommand{\code}{m}{\texttt{
+  \seq_set_split:Nnn \l_tmpa_seq { ~ } {#1}
+  \seq_map_indexed_inline:Nn \l_tmpa_seq {
+    \int_compare:nNnT {##1} > {1} {\space}
+    \seqsplit{##2}
+  }
+}}
+\NewDocumentCommand{\lean}{m}{
+  \leavevmode\par\smallskip
+  {\footnotesize\normalfont\sffamily
+   \clist_map_inline:nn{#1}{\noindent Lean:~\nolinkurl{##1}\par}}
+  \smallskip
+}
+\NewDocumentCommand{\uses}{m}{\clist_map_inline:nn{#1}{\vphantom{\ref{##1}}}\ignorespaces}
+\NewDocumentCommand{\proves}{m}{\clist_map_inline:nn{#1}{\vphantom{\ref{##1}}}\ignorespaces}
+\ExplSyntaxOff
+\newcommand{\depview}{\begin{center}\includegraphics[width=0.91\textwidth]{overview.pdf}\end{center}}

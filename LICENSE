@@ -1,0 +1,16 @@
+Copyright (c) 2026 Kazushi Ueda
+
+Original Lean source, Python/shell tooling, and GitHub workflow code are
+licensed under the MIT License; see LICENSES/MIT.txt.
+
+Original explanatory prose, Blueprint TeX and mathematical illustrations,
+and other original documentation are licensed under Creative Commons
+Attribution 4.0 International; see LICENSES/CC-BY-4.0.txt.
+Attribution: Kazushi Ueda, Serre–Markov classification: Lean formalization
+and Blueprint, https://github.com/uedakazushi/serre-markov-lean.
+
+Generated explanatory HTML/PDF follow the documentation license. Embedded
+original source code follows MIT. Third-party software and assets retain
+their original licenses. In particular, MathJax is Apache-2.0 and its license
+is included in the website distribution. Lean, mathlib, and other external
+dependencies are not relicensed by this project.
