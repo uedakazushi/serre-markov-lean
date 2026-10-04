@@ -1,0 +1,8 @@
+import SerreMarkov.ReflectionRoots
+#print axioms SerreMarkov.ReflectionRoots.reflection_eq_iff
+#print axioms SerreMarkov.ReflectionRoots.integer_reflection_eq_iff
+#print axioms SerreMarkov.ReflectionRoots.rootNorm_transport
+#print axioms SerreMarkov.ReflectionRoots.reflection_transport
+#print axioms SerreMarkov.ReflectionRoots.reflection_involution
+#print axioms SerreMarkov.ReflectionRoots.reflection_ne_one
+#print axioms SerreMarkov.ReflectionRoots.reflection_isometry

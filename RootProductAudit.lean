@@ -1,0 +1,11 @@
+import SerreMarkov.RootProductFormula
+
+#print axioms SerreMarkov.RootProductFormula.squareRoots_card_finset_prod
+#print axioms SerreMarkov.RootProductFormula.factorization_modulus_product
+#print axioms SerreMarkov.RootProductFormula.factorization_prime_powers_pairwise
+#print axioms SerreMarkov.RootProductFormula.squareRoots_card_factorization
+#print axioms SerreMarkov.RootProductFormula.squareRoots_card_odd_product
+#print axioms SerreMarkov.RootProductFormula.squareRoots_card_odd_formula
+#print axioms SerreMarkov.RootProductFormula.odd_lattice_candidate_product
+#print axioms SerreMarkov.RootProductFormula.odd_lattice_candidate_formula
+#print axioms SerreMarkov.RootProductFormula.odd_root_sign_quotient_formula

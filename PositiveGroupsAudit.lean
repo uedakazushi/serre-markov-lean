@@ -1,0 +1,9 @@
+import SerreMarkov.PositiveGroups
+
+#print axioms SerreMarkov.PositiveGroups.even_word_mem_evenGroup
+#print axioms SerreMarkov.PositiveGroups.evenGroup_integer_conjugation
+#print axioms SerreMarkov.PositiveGroups.evenGroup_isomorphic_integer_subgroup
+#print axioms SerreMarkov.PositiveGroups.integerProjective_ker
+#print axioms SerreMarkov.PositiveGroups.integerPSLCast_injective
+#print axioms SerreMarkov.PositiveGroups.evenGroup_integer_projective_subgroup
+#print axioms SerreMarkov.PositiveGroups.positive_solution_integer_projective_subgroup

@@ -1,0 +1,11 @@
+import SerreMarkov.PositiveTriangleLower
+import SerreMarkov.PositiveThreeTriangles
+
+#print axioms SerreMarkov.PositiveTriangleLower.chamber_abd_defect_bound
+#print axioms SerreMarkov.PositiveTriangleLower.chamber_ace_defect_bound
+#print axioms SerreMarkov.PositiveTriangleLower.chamber_bcf_defect_bound
+#print axioms SerreMarkov.PositiveTriangleLower.chamber_def_defect_bound
+#print axioms SerreMarkov.PositiveTriangleLower.chamber_all_triangle_bounds
+#print axioms SerreMarkov.PositiveThreeTriangles.a_three_incident_bounds
+#print axioms SerreMarkov.PositiveThreeTriangles.a_three_abd_triangle_bound
+#print axioms SerreMarkov.PositiveThreeTriangles.a_three_ace_triangle_bound

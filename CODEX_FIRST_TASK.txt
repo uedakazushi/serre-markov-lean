@@ -1,0 +1,22 @@
+Audit and complete the recovered SerreMarkov Lean checkpoint. Do NOT restart the formalization.
+
+Read AGENTS.md, HANDOFF.md, STATUS.md, GAPS.md, and PAPER_MAP.md first.
+
+This task is verification-first. Do not begin new hyperbolic geometry work yet.
+
+1. Initialize Git if this is not already a repository and make a baseline commit containing the recovered source, excluding build caches.
+2. Confirm Lean 4.24.0 and mathlib v4.24.0 from the pinned files.
+3. Run `lake exe cache get` if necessary and run `lake build`.
+4. Audit for `sorry`, `admit`, project `axiom`, and `sorryAx`.
+5. Then build the non-default full-classification path serially. Follow `scripts/verify.sh`; do not run the large polynomial certificates in parallel.
+6. Obtain definite results for PositiveSortedLargeGuards, PositiveSortedLargeMinus/Plus, PositiveSortedFiveLargeMinus/Plus, PositiveSortedFiveLarge, PositiveSortedLarge, PositiveClassificationFull, and FullClassification.
+7. If a build is merely slow, preserve it and continue serially; do not classify timeout as a mathematical failure. If memory is the problem, split build invocations rather than weaken the proof.
+8. If a module fails, fix the earliest failing dependency while preserving theorem statements. Do not add sorry/admit/axioms.
+9. Create RECOVERY_AUDIT.md with exact commands, exit codes, timings, errors, and the strongest full-classification declaration that kernel-checked.
+10. If FullClassification succeeds, import/promote it into the default SerreMarkov root, run `lake build` again, rerun the axiom audit, update STATUS.md and PAPER_MAP.md, and commit the milestone.
+
+Stop this first task only after either:
+- FullClassification is in the default verified build, or
+- you have isolated a specific reproducible source-level failure that cannot be repaired without new mathematical work, documented in GAPS.md.
+
+Do not report the paper as fully formalized merely because the result theorem is proved by an alternative algebraic route. Distinguish result-complete from proof-route-complete as defined in AGENTS.md.

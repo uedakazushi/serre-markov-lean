@@ -1,0 +1,6 @@
+import SerreMarkov.PositiveThreeFiveBounds
+import SerreMarkov.PositiveReversal
+#print axioms SerreMarkov.PositiveThreeFourBounds.a_three_d_four_bounds
+#print axioms SerreMarkov.PositiveThreeFive.a_three_d_five_bounds
+#print axioms SerreMarkov.PositiveReversal.reverseSix_applyWord
+#print axioms SerreMarkov.PositiveReversal.reverseSix_shortTerminal_iff

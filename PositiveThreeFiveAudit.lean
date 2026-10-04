@@ -1,0 +1,5 @@
+import SerreMarkov.PositiveThreeFiveCensus
+#print axioms SerreMarkov.PositiveThreeFive.a_three_d_five_bounds
+#print axioms SerreMarkov.PositiveThreeFive.a_three_d_five_terminal_census
+#print axioms SerreMarkov.PositiveThreeFive.a_three_d_five_terminal_height
+#print axioms SerreMarkov.PositiveThreeFive.a_three_d_five_terminal_classification

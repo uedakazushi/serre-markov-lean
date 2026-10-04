@@ -1,0 +1,7 @@
+import SerreMarkov.Normalize
+import SerreMarkov.DihedralFinite
+#print axioms SerreMarkov.family_normalize
+#print axioms SerreMarkov.family_normalize_degenerate
+#print axioms SerreMarkov.Dihedral.pairReach_reduce_gcd
+#print axioms SerreMarkov.Dihedral.identity_product_hurwitz
+#print axioms SerreMarkov.Dihedral.identity_product_hurwitz_mod

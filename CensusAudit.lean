@@ -1,0 +1,11 @@
+import SerreMarkov.ArbitraryBetaCensus
+
+#print axioms SerreMarkov.IndexTwelve.enumerateInvolutions_complete
+#print axioms SerreMarkov.IndexTwelve.census_projection_eq_enumeration
+#print axioms SerreMarkov.IndexTwelve.allCensusRows_checked
+#print axioms SerreMarkov.IndexTwelve.allMatchingInvolutions_length
+#print axioms SerreMarkov.IndexTwelve.census_witness_counts
+#print axioms SerreMarkov.IndexTwelve.complete_index_twelve_census_unique
+#print axioms SerreMarkov.IndexTwelve.complete_index_twelve_census_two_cycles
+#print axioms SerreMarkov.IndexTwelve.beta_normalization
+#print axioms SerreMarkov.IndexTwelve.arbitrary_beta_census_unique

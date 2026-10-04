@@ -1,0 +1,5 @@
+import SerreMarkov.PositiveSortedFiveLarge
+
+#print axioms SerreMarkov.PositiveSortedFiveLargeMinus.certificate
+#print axioms SerreMarkov.PositiveSortedFiveLargePlus.certificate
+#print axioms SerreMarkov.PositiveSortedFiveLarge.a_five_sorted_large_impossible

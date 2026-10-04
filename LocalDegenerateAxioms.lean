@@ -1,0 +1,10 @@
+import SerreMarkov.DegenerateClassification
+import SerreMarkov.ArbitraryBetaCensus
+
+#print axioms SerreMarkov.degenerate_classification
+#print axioms SerreMarkov.degenerate_lattice_classification
+#print axioms SerreMarkov.degenerate_latticeEquivalent_iff_reachable
+#print axioms SerreMarkov.latticeEquivalent_shifted_power_zero
+#print axioms SerreMarkov.degenerate_family_lattice_injective
+#print axioms SerreMarkov.IndexTwelve.beta_normalization
+#print axioms SerreMarkov.IndexTwelve.arbitrary_beta_census_unique

@@ -1,0 +1,7 @@
+import SerreMarkov.PositiveAdjacentThrees
+
+#print axioms SerreMarkov.PositiveAdjacentThrees.no_solution_three_four_three
+#print axioms SerreMarkov.PositiveAdjacentThrees.no_solution_three_five_three
+#print axioms SerreMarkov.PositiveAdjacentThrees.chamber_no_adjacent_threes
+#print axioms SerreMarkov.PositiveAdjacentThrees.reverseSix_chamber
+#print axioms SerreMarkov.PositiveAdjacentThrees.chamber_no_last_adjacent_threes

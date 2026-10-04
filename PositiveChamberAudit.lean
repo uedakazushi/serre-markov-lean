@@ -1,0 +1,9 @@
+import SerreMarkov.PositiveChamber
+
+#print axioms SerreMarkov.PositiveChamber.positive_solution_regular
+#print axioms SerreMarkov.PositiveChamber.positive_solution_absolute_bounds
+#print axioms SerreMarkov.PositiveChamber.positive_triangle_bounds
+#print axioms SerreMarkov.PositiveChamber.triangle_vieta_positive
+#print axioms SerreMarkov.PositiveChamber.step_preserves_chamber
+#print axioms SerreMarkov.PositiveChamber.applyWord_preserves_chamber
+#print axioms SerreMarkov.PositiveChamber.braid_word_integerL1_eq_sum

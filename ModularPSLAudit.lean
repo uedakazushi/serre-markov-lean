@@ -1,0 +1,5 @@
+import SerreMarkov.ModularPSLCensus
+#print axioms SerreMarkov.ModularPSLCensus.subgroup_census_unique
+#print axioms SerreMarkov.ModularPSLCensus.representativeSubgroup_admissible
+#print axioms SerreMarkov.ModularPSLCensus.representativeSubgroups_conjugate_iff
+#print axioms SerreMarkov.ModularPSLCensus.projectiveS_mul_R

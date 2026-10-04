@@ -1,0 +1,18 @@
+{
+  "default_lake_build_exit": 0,
+  "jobs": 3460,
+  "theorems": 8059,
+  "definitions": 1118,
+  "allowed_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "extended_build": "interrupted_not_verified",
+  "probe_checks": {
+    "success": 5,
+    "error": 2,
+    "timeout": 25
+  },
+  "source_changes": []
+}

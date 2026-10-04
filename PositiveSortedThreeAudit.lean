@@ -1,0 +1,4 @@
+import SerreMarkov.PositiveSortedThreeLarge
+
+#print axioms SerreMarkov.PositiveSortedThreeLarge.a_three_sorted_large_impossible
+#print axioms SerreMarkov.PositiveSortedThreeLarge.a_three_sorted_small_boundary

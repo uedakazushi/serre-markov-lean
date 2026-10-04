@@ -1,0 +1,6 @@
+import SerreMarkov.PositiveThreeFourCensus
+#print axioms SerreMarkov.PositiveThreeFourBounds.a_three_d_four_bounds
+#print axioms SerreMarkov.PositiveThreeFour.a_three_d_four_one_step_census
+#print axioms SerreMarkov.PositiveThreeFour.a_three_d_four_terminal_unique
+#print axioms SerreMarkov.PositiveThreeFour.a_three_d_four_terminal_height
+#print axioms SerreMarkov.PositiveThreeFour.a_three_d_four_terminal_classification

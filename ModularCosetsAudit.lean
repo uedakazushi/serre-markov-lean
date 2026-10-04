@@ -1,0 +1,11 @@
+import SerreMarkov.ModularCosets
+
+#print axioms SerreMarkov.ModularCosets.pairStabilizer_index
+#print axioms SerreMarkov.ModularCosets.pairCosetEquiv_smul
+#print axioms SerreMarkov.ModularCosets.groupWord_surjective
+#print axioms SerreMarkov.ModularCosets.coset_pairStabilizer
+#print axioms SerreMarkov.ModularCosets.coset_generator_fixed_point_free_iff
+#print axioms SerreMarkov.ModularCosets.transitive_pair_conjugacy_iff_stabilizers
+#print axioms SerreMarkov.ModularCosets.representativeSubgroup_admissible
+#print axioms SerreMarkov.ModularCosets.abstract_subgroup_census_unique
+#print axioms SerreMarkov.ModularCosets.representativeSubgroups_conjugate_iff

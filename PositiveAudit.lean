@@ -1,0 +1,10 @@
+import SerreMarkov.PositiveIntegral
+import SerreMarkov.PositiveRepresentatives
+
+#print axioms SerreMarkov.PositiveIntegral.positive_frame_even_words_integral_SL2
+#print axioms SerreMarkov.PositiveIntegral.positive_solution_even_words_integral_SL2
+#print axioms SerreMarkov.PositiveExamples.representative_isSolution
+#print axioms SerreMarkov.PositiveExamples.representative_regular
+#print axioms SerreMarkov.PositiveExamples.representative_cube_content
+#print axioms SerreMarkov.PositiveExamples.representatives_latticeEquivalent_iff
+#print axioms SerreMarkov.PositiveExamples.representatives_reachable_iff

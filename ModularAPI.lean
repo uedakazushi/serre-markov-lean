@@ -1,0 +1,15 @@
+import Mathlib.LinearAlgebra.Matrix.ProjectiveSpecialLinearGroup
+import Mathlib.Tactic
+#check Int.mul_eq_one_iff_eq_one_or_neg_one
+#check Int.mul_eq_one_iff
+#check Int.emod_lt_abs
+#check Int.emod_nonneg
+#check Int.natAbs_emod_lt_natAbs
+#check Int.natAbs_of_nonneg
+#check Int.emod_add_ediv
+#check Int.emod_def
+#check Int.ediv_mul_add_emod
+#check Int.natAbs_lt_natAbs_of_nonneg_of_lt
+#check QuotientGroup.mk'_surjective
+#check QuotientGroup.eq_one_iff
+#check Matrix.SpecialLinearGroup.mem_center_iff
