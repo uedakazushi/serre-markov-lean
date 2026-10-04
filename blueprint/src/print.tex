@@ -1,0 +1,26 @@
+% !TeX program = lualatex
+\InputIfFileExists{blueprint-local-fonts.tex}{}{}
+\documentclass[a4paper,10pt]{ltjsarticle}
+\usepackage[margin=23mm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{expl3,graphicx,booktabs,longtable,array,seqsplit}
+\usepackage{xcolor,fancyhdr,enumitem}
+\usepackage[unicode,colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\input{macros/common}
+\input{macros/print}
+\setlength{\emergencystretch}{3em}
+\setlength{\parskip}{0.15em}
+\allowdisplaybreaks[2]
+\raggedbottom
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Serre--Markov Lean Blueprint}
+\fancyhead[R]{\small 数学と形式化の対応}
+\fancyfoot[C]{\thepage}
+\setcounter{tocdepth}{2}
+\title{Serre--Markov 分類の Lean Blueprint\\\large 定義・証明経路・依存関係と検証済みコード}
+\author{植田 一石 (Kazushi Ueda)}
+\date{2026年10月5日}
+\begin{document}
+\maketitle
+\input{content}
+\end{document}

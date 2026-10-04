@@ -113,7 +113,7 @@ theorem certificate (B C D E F : ℤ)
    bits=name.split(':');word=tuple(bits[1].split(','))if bits[1]else();j=words[word]
    coord='abcdef'[int(bits[2])]
    access='hW'+str(j)+'.2.2'+['.1','.2.1','.2.2.1','.2.2.2.1','.2.2.2.2.1','.2.2.2.2.2'][int(bits[2])]
-   lines.append(f'  let G{i} : ℤ := W{j}.{coord}-3\n  have hG{i} : 0≤G{i} := by\n    have h := {access}\n    dsimp only [G{i}]\n    omega\n')
+   lines.append(f'  let G{i} : ℤ := W{j}.{coord}-3\n  have hG{i} : 0≤G{i} := by\n    have h := {access}\n    dsimp only [G{i}]\n    exact sub_nonneg.mpr h\n')
   elif name.startswith('triangle:'):
    bits=name.split(':');word=tuple(bits[1].split(','))if bits[1]else();j=words[word];tri=bits[2]
    u,v,w=tri
@@ -121,7 +121,7 @@ theorem certificate (B C D E F : ℤ)
   have hG{i} : 0≤G{i} := by
     have h := PositiveTriangleLower.chamber_{tri}_defect_bound W{j} hW{j}
     dsimp only [G{i}]
-    linarith only [h]
+    exact sub_nonneg.mpr h
 ''')
   elif name=='marker':
    lines.append(f'  let G{i} : ℤ := IntrinsicSigns.thirdMinorSum z-1\n  have hG{i} : 0≤G{i} := by have h := hz.2.1; dsimp only [G{i}]; omega\n')

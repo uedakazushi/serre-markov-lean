@@ -1,0 +1,607 @@
+\section{格子同型類のファイバーと判定算法}
+
+本節では、前節までに得た三型の分類を集約し、変異軌道から整数 Euler
+格子の同型類への忘却写像を扱う。同じ格子を持つことと変異で移り合うことは、
+この段階で初めて明確に比較される。形式化では、同型条件をまず整数行列の
+合同として証明し、有限算術を経てファイバーの個数を求める。最後に、
+存在・一意性定理を、必ず停止して実際の変異語も返す算法へ接続する。
+
+この順序には理由がある。合同式による格子同型判定は全分類を使わずに
+成立し、根数公式も有限環の算術だけから証明される。一方、その公式が
+\emph{すべての整数解の軌道}を数えるという結論には、負側の完全分類が
+必要である。Lean のモジュールもこの依存を分離しており、候補集合の個数、
+族で表されるファイバー部分、全ファイバーの三段階を混同していない。
+
+\subsection{三型の集約と忘却写像}
+
+\begin{definition}[標準代表の添字型]
+\label{bp:full-canonical}
+\lean{SerreMarkov.CanonicalRepresentatives.Canonical,SerreMarkov.CanonicalRepresentatives.representative}
+\leanok
+\uses{bp:def-family,bp:intrinsic-kind}
+標準代表の添字集合を、次の互いに交わらない三部分の和とする。
+\[
+ \{k\in\N\}\ \sqcup\
+ \{(x,y)\in\Z^2:0\le y\le x,\ 0<x+y\}\ \sqcup\ \{0,1,2,3,4\}.
+\]
+第一の添字 $k$ の代表は $\F(k,-k)$、第二の添字 $(x,y)$ の代表は
+$\F(x,y)$、第三の添字は五つの正側代表を表す。この添字集合を $C$、
+代表を取る写像を $c\mapsto z_c$ と書く。
+\end{definition}
+
+Lean ではこの和を帰納型 \code{Canonical} の三つのコンストラクタ
+\code{degenerate}, \code{negative}, \code{positive} として定義する。
+負側パラメータの不等式は部分型の証明フィールドに入り、正側添字は
+\code{Fin 5} である。そのため、存在しない六番目の散在代表や、正規化領域の
+外にある負側パラメータを標準代表として指定できない。
+\code{representative} はこの帰納型についての場合分けであり、各代表が
+解であることと、代表の内在的型がその添字の型に一致することも証明される。
+
+\begin{theorem}[全変異軌道の一意分類]
+\label{bp:full-classification}
+\lean{SerreMarkov.FullClassification.full_classification,SerreMarkov.FullClassification.canonicalOrbitEquiv}
+\leanok
+\uses{bp:full-canonical,bp:family-unique,bp:neg-classification,bp:deg-classification,bp:pos-classification}
+任意の $z\in\Sol$ に対して
+\[
+ \exists! c\in C,\qquad \Reach(z,z_c).
+\]
+従って $c\mapsto[z_c]$ は $C$ から解の符号付き変異軌道集合への全単射である。
+\end{theorem}
+\begin{proof}
+\leanok
+解の内在的型で場合分けする。負側では正規化した $(x,y)$ への到達、
+退化側では非負の $k$ への到達、正側では五代表の一つへの到達を使う。
+同じ型での一意性は、それぞれ族の一意性、退化パラメータの一意性、
+五代表の軌道分離による。異なる型の代表が移り合わないことは、型の
+変異不変性による。形式化の最後は、存在性とすでに証明された
+\code{canonical\_target\_unique} を合わせる短い集約証明である。
+\end{proof}
+
+\code{FullClassificationPipeline} は正側存在性だけを明示的な仮定として
+受け取る中間モジュールである。これを読む際に、その仮定を追加公理と
+取り違えてはいけない。最終モジュール \code{FullClassification} の
+\code{positive\_completeness} は、正側完全分類定理を適用してこの仮定を
+供給する実際の証明である。上記の最終定理には分類仮定が残らない。
+軌道全単射は \code{canonical\_orbit\_map\_bijective} と
+\code{canonicalOrbitEquiv} にも記録される。
+
+\begin{definition}[解軌道から整数格子への忘却]
+\label{bp:fiber-forgetful}
+\lean{SerreMarkov.solutionForgetfulMap}
+\leanok
+\uses{bp:def-solution,bp:def-reachable,bp:def-lattice}
+解集合を $\Sol=\{z:\operatorname{isSolution}(z)\}$ とし、$L(z)$ で $G(z)$ を持つ整数 Euler 格子を表す。整数行列
+$B\in\operatorname{GL}_4(\Z)$ が
+\[
+ B^{\mathsf T}G(z)B=G(w)
+\]
+を満たすとき、$z,w$ の整数 Euler 格子を同型とする。符号付き変異軌道を
+格子同型類へ送る写像を
+\[
+ \Phi:\Sol/\Reach\longrightarrow \{L(z):z\in\Z^6\}/\cong,
+ \qquad [z]\longmapsto[L(z)]
+\]
+と定義する。格子類 $L$ のファイバーは
+$\{o\in\Sol/\Reach:\Phi(o)=L\}$ である。
+\end{definition}
+
+Lean の \code{LatticeEquivalent} は可逆整数行列の型
+\code{Mat4} の単元型を用いる。行列式が $1$ または $-1$ の
+行列による合同という記述との同値も証明される。変異語は整数の基底変更を
+与えるため、\code{reachable\_latticeEquivalent} により忘却写像は商に降りる。
+解に制限しない六整数組の商写像 \code{forgetfulMap} と、解部分型に制限した
+上の \code{solutionForgetfulMap} は別々に定義されている。
+本節の個数は後者のファイバーを指す。値域に解から来ない格子類も含めるのは
+意図的であり、そのファイバーは空集合である。
+
+\subsection{族の整数同型判定}
+
+以後、総パラメータ $m=x+y$ を固定して
+\[
+ L_m(y):=L\bigl(\F(m-y,y)\bigr)
+\]
+と書く。$m>0$ の場合に負側族となる。以下の最初の同型条件には $m>0$ より
+弱い $m\ne0$ だけで足りる。負側分類とは独立に、元の六整数組の Euler
+行列そのものを比較する定理である。
+
+\begin{theorem}[同時合同式による完全同型判定]
+\label{bp:fiber-isometry}
+\lean{SerreMarkov.family_isometry_iff_divisibility,SerreMarkov.family_positive_isometry_iff}
+\leanok
+\uses{bp:def-lattice,bp:def-family}
+$m\in\Z\setminus\{0\}$、$y,y'\in\Z$ とする。このとき
+\[
+ L_m(y)\cong L_m(y')
+ \quad\Longleftrightarrow\quad
+ \exists t\in\Z:\quad
+ m\mid y-y'-2t,\qquad m\mid t(t-y).
+\]
+さらに $m,m'>0$ のとき、$L_m(y)\cong L_{m'}(y')$ ならば $m=m'$ である。
+\end{theorem}
+\begin{proof}
+\leanok
+族の Euler 行列を行列式 $-1$ の整数基底変更により
+\[
+ H_m(y)=
+ \begin{pmatrix}
+ 1+my&y&0&1\\
+ m&1&1&0\\
+ -m&-1&0&0\\
+ -1&0&0&0
+ \end{pmatrix}
+\]
+へ移す。これが \code{adaptedGram} である。十分性は明示行列による。
+$y-y'-2t=mg$、$t(t-y)=mk$ とおき、
+\[
+ T=
+ \begin{pmatrix}
+ 1&0&0&0\\
+ -t&1&0&0\\
+ t+mg+k&g&1&0\\
+ 0&k+gt&t&1
+ \end{pmatrix}
+\]
+とすると、$\det T=1$ および $T^{\mathsf T}H_m(y)T=H_m(y')$ が成り立つ。
+元の基底へ戻せば所要の整数等長行列が得られる。
+
+必要性は合同行列が Serre 作用素を絡み合わせることから導く。適合基底で
+移した shifted Serre 作用素の三乗を比較すると、同型行列の外側の五成分が
+零になる。一次の作用素を比較すると、残る上側成分も零となり、対角成分が共通の $s$ となる。さらに
+$s^2=1$ が従う。従って同型行列は
+\[
+ \begin{pmatrix}
+ s&0&0&0\\ r&s&0&0\\ a&g&s&0\\ b&h&k&s
+ \end{pmatrix}
+\]
+の形になる。絡み合わせ式と合同式の特定成分を比較し、$t=-sr$ と置くと
+二つの整除条件が得られる。異なる正の総パラメータについても、三乗の
+絡み合わせ式から下三角形を導き、対角成分が整数単元であることを使って
+$m=m'$ を得る。
+\end{proof}
+
+十分性の証明は \code{Isometry}、必要性と総パラメータ不変性は
+\code{IsometryNecessary} に置かれる。行列恒等式は各成分に展開して
+多項式計算で証明される。必要性には抽象的な旗の分類定理を仮定せず、
+実際の整数行列成分を比較している。総パラメータまで含めた結論は
+\code{family\_positive\_isometry\_iff} であり、任意の負側解への移送は
+\code{normalized\_lattice\_criterion} が担う。
+
+\begin{theorem}[奇数の総パラメータ]
+\label{bp:fiber-odd-square}
+\lean{SerreMarkov.family_isometry_iff_odd_square}
+\leanok
+\uses{bp:fiber-isometry}
+$m\in\N$ を奇数とする。任意の $y,y'\in\Z$ について
+\[
+ L_m(y)\cong L_m(y')
+ \quad\Longleftrightarrow\quad
+ (y')^2\equiv y^2\pmod m.
+\]
+\end{theorem}
+\begin{proof}
+\leanok
+同時合同式を満たす $t$ があるならば、有限環 $\Z/m\Z$ で
+\[
+ (y-2t)^2=y^2+4t(t-y)=y^2
+\]
+である。逆に $m$ が奇数なら $2$ は有限環で可逆であるから、
+$t=(y-y')/2$ と定められる。平方の等式は $4t(t-y)=0$ を与え、
+$4$ の可逆性から第二の同時合同式が従う。有限環の証明を整数へ戻し、
+前定理の明示行列を適用する。
+\end{proof}
+
+奇数の仮定は Lean の \code{Odd m} として付される。これは $m\ne0$ も
+含意するので、有限環は有限型を持つ。$m=1$ も含まれ、根集合は一元である。
+$y$ は自然数に制限されない。負のパラメータを含む整数についても、
+同じ有限環の式を使う。
+
+\begin{proposition}[偶数法での平方合同の限界]
+\label{bp:fiber-even-example}
+\lean{SerreMarkov.family_even_square_counterexample}
+\leanok
+\uses{bp:fiber-isometry}
+法 $4$ では $0^2\equiv2^2$ であるが、
+\[
+ L_4(0)=L\bigl(\F(4,0)\bigr)
+ \not\cong
+ L\bigl(\F(2,2)\bigr)=L_4(2).
+\]
+従って、平方合同だけでは偶数の総パラメータの同型を判定できない。
+\end{proposition}
+\begin{proof}
+\leanok
+同時合同式が成立するなら $-2-2t\equiv0\pmod4$ により $t$ は奇数になる。
+しかし第二式 $t^2\equiv0\pmod4$ は偶数性を要求し、矛盾する。平方の等式と
+非同型の両方を Lean のカーネルが検査する。
+\end{proof}
+
+この例は算法にも反映される。偶数法に対して奇数用の平方比較を再利用せず、
+常に二つの合同式を同時に調べる。これにより、一般の負側格子の判定定理は
+偶数・奇数の両方を覆う。
+
+\subsection{候補集合、根数、全ファイバー}
+
+\begin{definition}[有限正規化候補]
+\label{bp:fiber-candidates}
+\lean{SerreMarkov.FamilyFiberFinite.Candidate}
+\leanok
+\uses{bp:def-family,bp:fiber-isometry}
+$m\in\N$ と $y\in\Z$ に対して
+\[
+ C_m(y)=\{j\in\N:2j\le m,\ L_m(j)\cong L_m(y)\}
+\]
+と定める。これは $\{0,\ldots,\lfloor m/2\rfloor\}$ の部分集合であり、
+\[
+ |C_m(y)|\le\lfloor m/2\rfloor+1
+\]
+である。また
+\[
+ R_m(y)=\{r\in\Z/m\Z:r^2=y^2\}
+\]
+と書く。
+\end{definition}
+
+Lean では正規化添字を \code{NormalizedParameter m := Fin (m / 2 + 1)} と
+表し、\code{Candidate m y} はその部分型とする。候補が有限であることに
+全分類は必要ない。有限性は基底となる \code{Fin} から従い、個数の上界は
+\code{candidate\_card\_le} で証明される。整数の閉区間
+$0\le j,\ 2j\le m$ と、この自然数添字型との全単射も用意される。
+根集合は \code{ZMod m} の元の部分型 \code{Roots} である。
+$m>0$ のとき \code{ZMod m} は有限環であり、以下の根数公式ではこの条件が満たされる。
+
+\begin{theorem}[根集合の符号商と正規化候補]
+\label{bp:fiber-root-sign}
+\lean{SerreMarkov.FamilyFiberFinite.oddRootSignQuotientEquivCandidate,SerreMarkov.FamilyFiberFinite.odd_lattice_candidate_count}
+\leanok
+\uses{bp:fiber-candidates,bp:fiber-odd-square}
+$m$ が奇数なら、$r\sim r'$ を $r=r'$ または $r=-r'$ として
+\[
+ R_m(y)/\{r\sim-r\}\ \simeq\ C_m(y).
+\]
+特に $\delta_m(y)$ を $y^2\equiv0\pmod m$ のとき $1$、それ以外で $0$ とすると
+\[
+ 2|C_m(y)|=|R_m(y)|+\delta_m(y).
+\]
+\end{theorem}
+\begin{proof}
+\leanok
+剰余類の自然数代表を取り、符号反転の二元軌道の小さい方を選ぶ。
+代表 $j$ が符号反転した代表以下であることは、$2j\le m$ と同値である。
+これにより符号商と正規化した根候補との明示全単射を構成する。
+奇数のとき、前定理により根候補と格子候補が一致する。
+
+個数は有限集合上の対合の一般補題から求める。奇数法で $r=-r$ なら $r=0$
+なので、固定点は平方零の場合だけ一つ存在する。固定点を一元軌道、それ以外を
+二元軌道として数えると、表示した式を得る。
+\end{proof}
+
+一般の符号商の構成は \code{InvolutionCount}、根の対合と正規化区間への
+対応は \code{FamilyFiberFinite} にある。個数を先に計算して同じ個数の集合を
+同一視するのではなく、根と候補の対応写像および両側逆写像を実際に定義する。
+偶数法でも根集合の符号商と平方候補には対応があるが、それを格子候補へ
+移す段階で奇数性が必要となる。
+
+\begin{lemma}[素数冪の局所根数と中国剰余]
+\label{bp:fiber-local-crt}
+\lean{SerreMarkov.LocalRootFormula.primePower_integer_square_roots_formula,SerreMarkov.ChineseRoots.squareRootsCRT}
+\leanok
+\uses{bp:fiber-candidates}
+奇素数 $p$、$E\in\N$、$y\in\Z$ に対し、$y\ne0$ のとき
+$b=v_p(|y|)$ とおく。このとき
+\[
+ |R_{p^E}(y)|=
+ \begin{cases}
+ p^{\lfloor E/2\rfloor},&y=0\text{ または }E\le2b,\\
+ 2p^b,&y\ne0\text{ かつ }2b<E.
+ \end{cases}
+\]
+また互いに素な正整数 $m,n$ に対して
+\[
+ R_{mn}(y)\simeq R_m(y)\times R_n(y).
+\]
+\end{lemma}
+\begin{proof}
+\leanok
+平方が零になる局所分岐では、$r^2\equiv0\pmod{p^E}$ と
+$p^{\lceil E/2\rceil}\mid r$ が同値なので、根は
+$p^{\lfloor E/2\rfloor}$ 個である。非零分岐では
+$y=p^bu$、$p\nmid u$ と書き、根も $p^b$ で割る。
+残る単元の平方根は奇素数冪で二つあり、各符号に $p^b$ 個の持ち上げが
+あるため $2p^b$ となる。形式化はこの縮約を根部分型の全単射として実装する。
+中国剰余は \code{ZMod.chineseRemainder} の環同型を根部分型に制限する。
+環同型が二乗を保存し、その逆写像も根の条件を保存するので全単射となる。
+\end{proof}
+
+局所算術では $y=0$ の分岐を先に扱う。Lean の
+\code{natAbs.factorization} は自然数の有限支持関数なので、数学で形式的に
+$v_p(0)=\infty$ と置く代わりに、零を明示的に場合分けする。
+$E=0$ の場合も実装の範囲に含まれ、法 $1$ の一元根集合を正しく与える。
+CRT の全単射は \code{squareRootsCRT}、個数の積は
+\code{squareRoots\_card\_mul} である。
+
+\begin{theorem}[奇数法の根数積公式]
+\label{bp:fiber-root-formula}
+\lean{SerreMarkov.RootProductFormula.odd_lattice_candidate_formula}
+\leanok
+\uses{bp:fiber-local-crt,bp:fiber-root-sign}
+$m>0$ を奇数とし、$m=\prod_{p\mid m}p^{E_p}$ とする。各奇素数因子について
+\[
+ q_p(y)=
+ \begin{cases}
+ p^{\lfloor E_p/2\rfloor},&y=0\text{ または }E_p\le2v_p(|y|),\\
+ 2p^{v_p(|y|)},&y\ne0\text{ かつ }2v_p(|y|)<E_p
+ \end{cases}
+\]
+と定めれば
+\[
+ |C_m(y)|=\frac{\prod_{p\mid m}q_p(y)+\delta_m(y)}2.
+\]
+空積を $1$ とすることで、この式は $m=1$ にも成立する。
+\end{theorem}
+\begin{proof}
+\leanok
+互いに素な有限個の正整数因子の CRT 積公式を有限集合の帰納法で証明する。
+次に $m$ の実際の素因数分解の支持へ適用する。各素数冪が互いに素であることと、
+その積が $m$ となることは自然数の素因数分解についての定理から供給する。
+局所根数の各分岐を代入し、符号商の固定点補正を加える。
+最後の二分は整数の丸めを伴う近似ではない。先に
+$2|C_m(y)|=\prod q_p(y)+\delta_m(y)$ を証明するため、分子の偶数性が保証される。
+\end{proof}
+
+公式の Lean 版では指数 $E_p$ を \code{m.factorization p}、
+$v_p(|y|)$ を \code{y.natAbs.factorization p} と書く。
+個数を自然数型で記述するので、表示された除算は \code{Nat.div} である。
+ここまでの算術だけでは、候補集合が全ファイバーを尽くすとはまだいえない。
+この点を閉じるのが次の定理である。
+
+\begin{theorem}[候補から全ファイバーへの全単射]
+\label{bp:fiber-completion}
+\lean{SerreMarkov.NegativeFamilyOrbitFibers.fullFiberEquivCandidate}
+\leanok
+\uses{bp:fiber-candidates,bp:fiber-forgetful,bp:family-unique,bp:neg-classification}
+$m>0$、$y\in\Z$ とする。候補 $j$ を $\F(m-j,j)$ の変異軌道へ送る写像は
+\[
+ C_m(y)\ \simeq\ \Phi^{-1}([L_m(y)])
+\]
+という全単射を与える。これは偶数の $m$ に対しても成立する。
+\end{theorem}
+\begin{proof}
+\leanok
+候補の格子同型条件から、その軌道が所要のファイバーに属する。
+二つの候補が同じ軌道を与えたなら、正規化族の変異一意性により添字が一致する。
+従って写像は単射である。
+
+全射性には負側の完全分類を使う。ファイバーの任意の軌道について代表解を取る。
+格子同型は内在的型を保つため、その解は負側である。負分類により
+正規化族 $\F(x',y')$ へ到達する。その格子は $L_m(y)$ と同型なので、
+正の総パラメータ不変性から $x'+y'=m$ を得る。従って
+$0\le y'\le m/2$ であり、$y'$ は $C_m(y)$ の候補である。
+\end{proof}
+
+モジュール \code{FamilyOrbitFibers} はまず候補から全ファイバーへの単射と
+その像 \code{FamilyPart} を構成する。この段階の公式は像の個数を数える。
+\code{FamilyOrbitFiberCompletion} は負分類という前提を明示した接続補題を
+持ち、\code{NegativeFamilyOrbitFibers} が証明済みの負分類を供給する。
+上の \code{fullFiberEquivCandidate} はこの最後の無条件版である。
+したがって、実装の初期段階の「下界だけ」という説明を、最終成果の
+未証明部分と読み替えてはいけない。
+
+\begin{theorem}[全負側ファイバーの厳密な個数]
+\label{bp:fiber-full-formula}
+\lean{SerreMarkov.NegativeFamilyOrbitFibers.odd_fullFiber_explicit_card,SerreMarkov.NegativeFamilyOrbitFibers.fullFiber_finite,SerreMarkov.NegativeFamilyOrbitFibers.fullFiber_card_le,SerreMarkov.NegativeFamilyOrbitFibers.oddRootSignQuotientEquivFullFiber}
+\leanok
+\uses{bp:fiber-completion,bp:fiber-root-formula}
+任意の $m>0$、$y\in\Z$ に対して $\Phi^{-1}([L_m(y)])$ は有限で、
+その個数は $\lfloor m/2\rfloor+1$ 以下である。さらに $m$ が奇数なら
+\[
+ \bigl|\Phi^{-1}([L_m(y)])\bigr|
+ =\frac{\prod_{p\mid m}q_p(y)+\delta_m(y)}2.
+\]
+奇数の場合、根集合の符号商そのものが全ファイバーと全単射になる。
+\end{theorem}
+\begin{proof}
+\leanok
+候補との全単射から有限性と上界を移送する。奇数法では候補と根の符号商の
+全単射を合成し、前定理の候補個数公式を適用する。
+\end{proof}
+
+有限性は \code{fullFiber\_finite}、上界は \code{fullFiber\_card\_le}、
+根の符号商との全単射は \code{oddRootSignQuotientEquivFullFiber} に記録される。
+全ファイバーは商型の部分型なので、その個数の記述には \code{Nat.card} を
+使う。Lean の \code{Nat.card} は無限型にも定義されるため、個数式だけを
+見て有限性を推論するのではなく、先に有限性の証明を供給している。
+
+\begin{theorem}[奇素数平方冪における明示的な全代表]
+\label{bp:fiber-prime-square}
+\lean{SerreMarkov.PrimeSquareFiberRepresentatives.solution_unique_representative,SerreMarkov.PrimeSquareFiberRepresentatives.explicitFullFiberEquiv,SerreMarkov.NegativeFamilyOrbitFibers.primePower_zero_fullFiber_card}
+\leanok
+\uses{bp:fiber-completion,bp:fiber-odd-square,bp:fiber-local-crt,bp:family-unique}
+$p$ を奇素数、$e\in\N$ とし、$m=p^{2e}$ とおく。$L_m(0)$ と同型の格子を持つ
+任意の整数解は、ただ一つの
+\[
+ \F\bigl(p^{2e}-jp^e,jp^e\bigr),
+ \qquad 0\le j\le\frac{p^e-1}{2}
+\]
+へ変異で到達する。従ってファイバーの個数は厳密に $(p^e+1)/2$ である。
+\end{theorem}
+\begin{proof}
+\leanok
+$r^2\equiv0\pmod{p^{2e}}$ と $p^e\mid r$ が同値なので、候補のパラメータは
+$jp^e$ の形になる。正規化条件 $2jp^e\le p^{2e}$ は表示した $j$ の区間を
+与える。順写像はこの明示式、逆写像は候補パラメータを $p^e$ で割る写像である。
+両側の逆写像条件を証明して候補との全単射を作り、全ファイバーへの全単射を
+合成する。代表への変異到達の一意性は、この全単射と商の等式・到達関係の
+対応から得られる。
+\end{proof}
+
+Lean の添字は $\code{Fin}\,((p^e+1)/2)$ であり、
+\code{explicitFullFiberEquiv} の順写像は実際にこの代表式を使う。
+個数の等式から任意に全単射を選ぶ構成ではない。
+$e=0$ も含まれ、このとき代表は $\F(1,0)$ 一つである。
+例えば $p=3,e=2$ では、同一格子の全ファイバーは
+\[
+ \F(81,0),\quad\F(72,9),\quad\F(63,18),\quad
+ \F(54,27),\quad\F(45,36)
+\]
+の五軌道で尽くされる。一般一意性により、これらの相異なる添字は相異なる
+変異軌道を与える。
+
+\begin{theorem}[各ファイバーの有限性と一様非有界性]
+\label{bp:full-finite-unbounded}
+\lean{SerreMarkov.FullClassification.finite_fibers_and_unbounded,SerreMarkov.FullClassification.positive_fiber_card,SerreMarkov.DegenerateFibers.degenerate_fiber_card}
+\leanok
+\uses{bp:full-classification,bp:fiber-completion,bp:fiber-forgetful,bp:deg-classification,bp:pos-classification}
+すべての格子同型類 $L$ に対して $\Phi^{-1}(L)$ は有限である。一方、任意の
+$n\in\N$ に対して、ある $L$ のファイバーには $n+1$ 個以上の相異なる軌道が
+存在する。従って、ファイバーの個数に一様上界はない。
+解で表される退化側および正側格子のファイバーは、いずれも一元集合である。
+\end{theorem}
+\begin{proof}
+\leanok
+解から来る格子は三型で分ける。負側は上の有限候補模型を使う。退化側は
+退化分類とその格子パラメータ一意性、正側は五代表の格子同型による分離により
+一元である。解から来ない格子類のファイバーは空であり、やはり有限である。
+
+非有界性には、全分類とは独立の構成も実装されている。総パラメータを
+$3^{2n}$ とし、パラメータ
+\[
+ 3^n,\ 3^{n+1},\ldots,\ 3^{2n-1},\ 0
+\]
+の $n+1$ 個の族の解を取る。平方はすべて法 $3^{2n}$ で零なので、明示整数
+等長行列で共通格子との同型が得られる。一方、適切な $3$ 冪を法とする
+変異不変の支持条件が異なる添字を分離する。これらが同じファイバーへの
+単射を与える。
+\end{proof}
+
+ここで非有界性は格子類を動かした主張であり、一つの固定格子が無限個の軌道を
+持つという主張ではない。非有界構成は \code{Unbounded} と
+\code{unbounded\_solutionForgetfulMap\_fibers} にあり、最終定理はこれを全分類から
+得た全ファイバー有限性と合わせる。正側の一元性は
+\code{positive\_fiber\_card}、退化側は
+\code{degenerate\_fiber\_card} である。
+
+\subsection{停止する全探索と証明語の出力}
+
+分類の存在証明を、単に計算不能な標準代表選択として終わらせず、有限語を
+順番に調べる算法へ接続する。ここで目標は停止と正しさである。
+短い変異語を効率よく得ることや、実用的な計算量上界はこの算法の結論に
+含まれない。全探索は、一般的な降下手続きの実装の細部に依存せず、
+完全分類さえ証明されれば動作する。
+
+\begin{definition}[長さごとの語探索]
+\label{bp:alg-search}
+\lean{SerreMarkov.ClassificationDecision.searchLayer}
+\leanok
+\uses{bp:def-reachable,bp:full-canonical}
+三つの変異、三つの逆変異、四つの基底符号反転からなる十個の生成元を使う。
+長さ $n$ の全生成元語を列挙し、各語 $w$ に対して $w(z)$ が標準代表の
+形かどうかを整数比較で判定する。最初に見つけた組 $(w,c)$ を返し、
+見つからなければ空の結果を返す。この有限探索を第 $n$ 層と呼ぶ。
+\end{definition}
+
+\code{allWords 0} は空語だけであり、\code{allWords (n+1)} は十生成元を
+\code{allWords n} の語の先頭に付けて列挙する。
+任意の実際の語はその長さの層に含まれることが
+\code{word\_mem\_allWords} で証明される。
+標準代表の認識器 \code{parseCanonical} は、まず六整数組が族の形かを調べ、
+退化族の非負条件または負側の正規化条件を確認する。
+族の形でなければ五つの正側代表と比較する。
+認識器について、返した添字の代表が入力と等しいという健全性と、
+すべての標準代表を認識する完全性が証明される。
+
+\begin{theorem}[探索の停止と実際の変異語]
+\label{bp:alg-termination}
+\lean{SerreMarkov.ClassificationDecision.search_terminates,SerreMarkov.FullClassification.classify,SerreMarkov.FullClassification.classify_word}
+\leanok
+\uses{bp:alg-search,bp:full-classification}
+任意の解 $z\in\Sol$ について探索は停止し、有限語 $w_z$ と標準添字 $c_z$ を
+返す。そして
+\[
+ w_z(z)=z_{c_z}.
+\]
+停止深さは、標準代表が見つかる最初の層を取る自然数探索で定義される。
+\end{theorem}
+\begin{proof}
+\leanok
+完全分類から、ある標準代表へ到達する実際の有限語 $w$ が存在する。
+その語は長さ $|w|$ の列挙に含まれ、認識器は到達した標準代表を認識する。
+従って空でない層が存在する。\code{Nat.find} をこの存在証明と有限層の
+決定可能な条件に適用し、停止深さを得る。\code{Nat.find\_spec} により
+選んだ層の結果は空でなく、そこから語と添字を取り出せる。
+層探索の健全性が表示した等式を与える。
+\end{proof}
+
+実装では \code{search\_terminates} が存在性、\code{searchDepth} が
+\code{Nat.find} による深さ、\code{normalizeWithWitness} が証拠語付きの結果を
+担う。最終 API は \code{classify} で、返り値の型は
+\code{List Generator} と標準添字の組である。
+この計算定義は \code{noncomputable} ではない。分類の証明は実行時には
+消去され、実行は決定可能な有限層を順番に調べる。抽象的存在証明から
+実行時の語を取り出す選択公理には依存しない。
+
+\begin{theorem}[変異同値判定と到達語]
+\label{bp:alg-mutation}
+\lean{SerreMarkov.FullClassification.mutationEquivalentTest_correct,SerreMarkov.FullClassification.equivalenceWord_sound,SerreMarkov.FullClassification.equivalenceWord_isSome_iff}
+\leanok
+\uses{bp:alg-termination,bp:full-classification}
+二つの解 $z,w$ の計算された標準添字が等しいことは、$\Reach(z,w)$ と同値である。
+従って標準添字の比較は、すべての整数解の符号付き変異同値を決定する。
+さらに同値のときには、$z$ を $w$ に移す実際の有限語を返し、非同値のときは
+空の結果を返す。
+\end{theorem}
+\begin{proof}
+\leanok
+同じ標準添字に到達するなら、$z$ の正規化語と $w$ の正規化語の逆語を
+連結すれば $z$ から $w$ へ移れる。逆に $z,w$ が到達関係にあるなら、
+全分類の一意性により二つの標準添字は等しい。
+返す語はまさに
+\[
+ w_z\ \text{の後に}\ w_w^{-1}
+\]
+を作用させる語である。逆語は語の順序を逆転して、各生成元をその逆元に
+置き換えて得る。語の連結および逆語についての作用公式により正しさを検証する。
+\end{proof}
+
+\code{mutationEquivalentTest} は真偽値の判定、
+\code{mutationEquivalenceDecidable} は到達命題の \code{Decidable} を与える。
+\code{equivalenceWord} は語を返す。
+\code{equivalenceWord\_sound} は返された語の作用結果が入力の第二解と等しいことを
+保証し、\code{equivalenceWord\_isSome\_iff} は語が返ることと到達可能性の同値を
+保証する。この二つの命題により、偽陽性だけでなく偽陰性も排除される。
+
+\begin{theorem}[任意の解の整数格子同型判定]
+\label{bp:alg-lattice}
+\lean{SerreMarkov.FullClassification.latticeEquivalentTest_correct}
+\leanok
+\uses{bp:alg-termination,bp:fiber-isometry,bp:fiber-even-example,bp:full-classification,bp:fiber-forgetful}
+任意の二つの整数解について、整数 Euler 格子が同型かどうかは停止する算法で
+判定できる。正規化した二解が異なる型なら非同型、退化型なら $k$ の一致、
+正側なら五代表の添字の一致を比較する。負側なら総パラメータ $m$ を比較し、
+一致する場合に二つの同時合同式を法 $m$ の有限環で判定する。
+\end{theorem}
+\begin{proof}
+\leanok
+まず上の停止算法で両解を標準代表へ移す。正規化語は整数基底変更を与えるので、
+元の格子の同型問題と標準代表の格子の同型問題は同値である。
+異型の比較には内在的型の格子同型不変性を使う。退化型および正側では
+代表の格子同型による分離を使う。負側では総パラメータ不変性と完全同型判定を
+使う。整数の合同証人 $t$ の存在は、$\Z/m\Z$ の有限個の元を調べることと
+同値なので、その判定は必ず停止する。
+\end{proof}
+
+有限環の証人を調べる \code{familyIsometryTest} の健全性・完全性は
+\code{ArithmeticDecision} にある。これを三型の標準代表比較へ接続するのが
+\code{CanonicalLatticeDecision} であり、最終の無条件 API が上の定理である。
+例えば総パラメータ $15$ の $\F(14,1)$ と $\F(11,4)$ は格子判定が真となるが、
+標準添字が異なるため変異同値判定は偽となる。
+法 $4$ の $\F(4,0)$ と $\F(2,2)$ は、同時合同式を使う格子判定が偽となる。
+この二つの例は、二種類の判定を分け、偶数法の条件を保持する必要を示す。
+
+最後に、以上の算法の入力は解であることの証明を伴う部分型
+\code{Solution} である。任意の六整数組が解かどうかの多項式判定と、
+解として受け取った後の軌道・格子の判定は別の段階である。
+本節の終端定理はすべてその前提を明示し、途中モジュールに現れる正側分類の
+引数は最終モジュールで証明済み定理により供給される。
+これにより、全分類、全ファイバーの有限性と非有界性、奇数法の個数公式、
+証拠語を伴う停止判定という主結論が、一つの検査済み依存関係に収まる。

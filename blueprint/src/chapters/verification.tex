@@ -1,0 +1,96 @@
+\section{原稿との対応、検証、再現方法}
+\label{sec:verification}
+
+\subsection{主定理の対応と証明経路}
+原稿のラベルは v4 の \code{serre\_markov\_ja.tex} に付されたものである。
+以下の表で「完成」は、原稿の数値的な結論に対応する Lean 定理が追加仮定なしに証明されたことを意味する。
+同じ証明経路が全て形式化された、という意味ではない。
+
+\begin{center}
+\begin{tabular}{p{0.30\textwidth}p{0.21\textwidth}p{0.36\textwidth}}
+\hline
+原稿の主張・ラベル & Blueprint の節点 & 結論と経路 \\
+\hline
+全変異軌道の分類\newline \code{cor:full} & \ref{bp:full-classification} & 完成。三型の内在的分離と各型の整数分類を統合。\\
+負側分類\newline \code{thm:mainnegative} & \ref{bp:neg-classification} & 完成。無制限の整数下降と反射語によるパラメータ一意性。\\
+退化型分類\newline \code{thm:degclassification} & \ref{bp:deg-classification} & 完成。二乗零への帰着、Cayley 方程式の下降と一意性。\\
+正側五軌道\newline \code{thm:positivefive} & \ref{bp:pos-classification} & 完成。最小高さと全称的な多項式証明書、有限断面。\\
+族の格子同型\newline \code{prop:familyiso} & \ref{bp:fiber-isometry} & 完成。整数基底変更と同時合同式の必要十分条件。\\
+奇数法の積公式\newline \code{thm:fibercount} & \ref{bp:fiber-full-formula} & 完成。局所平方根数、CRT、符号商、全ファイバーとの同一視。\\
+有限性と非有界性\newline \code{thm:fiberintro} & \ref{bp:full-finite-unbounded} & 完成。真の忘却写像を使用し、明示的な平方冪族で非有界性。\\
+決定可能性\newline \code{cor:decidability} & \ref{bp:alg-mutation} & 完成。停止する正規化と同値語の構成。\\
+\hline
+\end{tabular}
+\end{center}
+
+基礎的な方程式保存、Serre 行列、原始旗、普遍 Riemann--Roch 型式、整数 Clifford 環、
+偶語の共通整数化、指数十二の有限置換表にも形式化済みの部分がある。
+ただし、主分類に使う依存グラフと原稿の章の順序は一致しない。
+例えば正側の五軌道分類は、指数十二であることを仮定せずに完成している。
+負側の整数下降も、双曲反射群の基本領域定理を仮定しない。
+
+\subsection{形式化していない原稿の部分}
+次の幾何的主張は本書の完成ノードには含めない。
+双曲平面上の作用の properness と基本領域、カスプ壁の原始性、
+四角形の貼り合わせと同変写像の構成、正の写像度および符号付き面積、
+正側の真の部分群の指数が十二であること、二つの穴を持つ楕円曲線による拡大の一意性、
+一般の Coxeter 群の Hurwitz 推移性、数値的な格子から幾何的・dg 圏的対象への実現は未形式化である。
+
+有限置換表が五つに分類されたことから、任意の正側群がその表に入るという大域的幾何は導かない。
+また、整数 Gram 行列の軌道分類から、固定した三角圏の例外列の推移性は導かない。
+原稿の結論と形式化された命題の入力型・仮定を確認するため、
+最終的にはリンク先の Lean 定理文を読む必要がある。
+
+未採用の局所下降仕様も残っている。例えば \code{NegativeDescent.LocalDescentProperty} は、
+特定の有限語集合による全称下降を述べる別の仕様で、その仕様自体の証明は完成していない。
+しかし負側分類は別の無条件下降で完成しており、その仕様を仮定していない。
+同様に正側では、一手の局所最小が任意に高く存在するため、一手不下降から高さ上界を導く方針は使えない。
+最小高さを持つ全長終端点へ帰着することが、有限検査を完全分類へつなぐ要所である。
+
+\subsection{Lean が確認する内容}
+\code{ring} は多項式恒等式を、\code{norm\_num} は数値評価を、
+\code{nlinarith} は与えた等式・不等式からの算術的帰結を証明項として生成する。
+有限表の \code{decide} もカーネルで検査できる証明項を生成する。
+多項式証明書の係数を外部で発見したことや、候補を探索したこと自体は数学的根拠にはしない。
+採用した恒等式、非負性、候補の網羅性、実際の到達語を Lean 内で別々に証明している。
+このプロジェクトでは外部ネイティブ評価を信頼する \code{native\_decide} は用いない。
+
+\code{AxiomAudit.lean} は \code{SerreMarkov} の再帰的 import 閉包にある自作定理と定義を列挙し、
+その推移的な公理依存を調べる。
+許容する公理は Lean の標準的な \code{propext}、\code{Classical.choice}、\code{Quot.sound} の三つだけである。
+\code{sorryAx} や追加の分類公理が含まれると失敗する。
+ソースを走査する検査も、コメント・文字列を除いた \code{sorry}、\code{admit}、\code{axiom}、
+\code{native\_decide} を拒否する。
+両者は役割が異なり、前者はコンパイル済み宣言の実際の依存、後者は自作ソースの禁止トークンを確認する。
+
+最後の全体検証は Lean 4.24.0 と mathlib v4.24.0 で成功した。
+mathlib の固定リビジョンは
+\code{f897ebcf72cd16f89ab4577d0c826cd14afaafc7} である。
+\code{lake build} は3470 jobs で成功し、監査対象は定理宣言8286個と定義等1232個であった。
+この数にはコンパイラが生成した補助宣言も含み、論文の定理の個数ではない。
+検証ログは同梱の \code{verification/build.log} に保存する。
+
+\subsection{Blueprint 固有の照合}
+本書は標準 Lean Blueprint の \code{\textbackslash lean}、\code{\textbackslash leanok}、
+\code{\textbackslash uses} を用いている。
+各ノードの \code{\textbackslash lean} に記載した完全修飾名について、
+Lean の環境に宣言が存在することと許容公理だけに依存することを検査する。
+さらに節点ラベル・参照の解決、依存グラフの非循環性を確認する。
+その結果と対応表を \code{blueprint/verification} に保存する。
+
+HTML の各宣言リンクは、同梱の Lean ソースにおける宣言の位置を開く。
+これは API の自動生成ドキュメント全体ではなく、本書に登場する宣言のソース案内である。
+個々の Lean ファイルの import と証明本体を読めるため、
+自然言語の説明から機械検証済みの実装へ辿ることができる。
+依存グラフは説明用に選んだ数学的依存を表す。生成補題の全依存を示すグラフではない。
+
+\subsection{再現手順と保守}
+プロジェクトのルートで \code{lake build} を実行し、主定理と公理監査を再検証する。
+Blueprint の宣言照合は \code{blueprint/scripts/verify\_lean\_refs.py}、
+HTML と PDF の再生成は \code{blueprint/README.md} の手順に従う。
+HTML は \code{leanblueprint 0.0.20}、\code{plasTeX 3.1}、
+\code{plastexdepgraph 0.0.5} と Graphviz を使用し、PDF は LuaLaTeX と LuaTeX-ja を使用する。
+数学のソースを変更した場合は、全体ビルド、宣言照合、Blueprint の依存と本文、
+最後にパッケージ中の検証ログとハッシュを更新する。
+既存の \code{HANDOFF.md}、\code{STATUS.md}、\code{GAPS.md} は、
+再開の入口、到達点、残る原稿上の範囲を短く確認するための補助文書である。

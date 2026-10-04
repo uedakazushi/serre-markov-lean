@@ -1,0 +1,210 @@
+\section{基本設定と内在的な三型}
+\subsection{六成分・変異語・二つの同値関係}
+\begin{definition}[整数六つ組と Gram 行列]\label{bp:def-six}
+\lean{SerreMarkov.Six,SerreMarkov.gram,SerreMarkov.gramInverse}\leanok
+整数六つ組 $z=(a,b,c,d,e,f)$ に対して
+\[
+M(z)=\begin{pmatrix}1&a&b&c\\0&1&d&e\\0&0&1&f\\0&0&0&1\end{pmatrix},
+\qquad \chi_z(x,y)=x^{\mathsf T}M(z)y
+\]
+と定める。格子の台は $\Z^4$ であり、$\chi_z$ は対称とは限らない。
+\end{definition}
+Lean の行列型は $\operatorname{Matrix}(\operatorname{Fin}4,\operatorname{Fin}4,\Z)$、
+六成分は名前付きの構造体である。基底添字は0から3までである。
+上三角対角成分1を型で固定することで、後の計算に可逆性の仮定を繰り返し付ける必要をなくしている。
+整数逆行列は一般の逆行列計算に委ねず、成分が整数多項式である具体式として最初に与える。
+
+\begin{definition}[二方程式の解]\label{bp:def-solution}
+\lean{SerreMarkov.q1,SerreMarkov.q2,SerreMarkov.isSolution,SerreMarkov.Solution}\leanok
+\uses{bp:def-six}
+\begin{align*}
+q_1(z)&=acdf-abd-ace-bcf-def+a^2+b^2+c^2+d^2+e^2+f^2,\\
+q_2(z)&=af-be+cd,\\
+\Sol&=\{z\in\Z^6:q_1(z)=8,\ q_2(z)^2=16\}.
+\end{align*}
+証明付き入力型は $\{z:\Z^6\mid z\in\Sol\}$ である。
+\end{definition}
+$q_2=4$ と $q_2=-4$ を最初から両方含める。符号変更は $q_2$ の符号を反転することがあるため、
+保存される方程式は平方を取ったものである。この規約は有限列挙と一般分類のどちらにも一貫して用いる。
+
+\begin{definition}[実際の有限変異語]\label{bp:def-reachable}
+\lean{SerreMarkov.Generator,SerreMarkov.step,SerreMarkov.applyWord,SerreMarkov.Reachable}\leanok
+\uses{bp:def-six}
+生成子は三つの変異、その三つの逆、四つの基底符号変更の合計10個である。
+例えば
+\[
+\sigma_1(a,b,c,d,e,f)=(a,ab-d,ac-e,b,c,f).
+\]
+語 $w=[g_1,\ldots,g_n]$ は $g_1$ から順に作用させる。
+$\Reach(z,z')$ は、有限語 $w$ が存在して $w\cdot z=z'$ となることである。
+\end{definition}
+語はリストにより実装される。任意置換、格子同型、逆順化を生成子として追加していない。
+後で補助的に逆順化を用いる場合にも、元の同値関係に操作を追加してよいかどうかを個別に証明する。
+
+\begin{lemma}[方程式の保存と可逆性]\label{bp:mutation-invariants}
+\lean{SerreMarkov.applyWord_preserves_solution,SerreMarkov.applyWord_inverse,SerreMarkov.reachable_equivalence,SerreMarkov.braid12,SerreMarkov.braid23,SerreMarkov.braid13}\leanok
+\uses{bp:def-solution,bp:def-reachable}
+各生成子は解集合を保存する。逆生成子を逆順に並べた語は元の語の作用を取り消す。
+従って $\Reach$ は同値関係であり、三変異は $B_4$ の組み紐関係を満たす。
+\end{lemma}
+\begin{proof}\leanok\uses{bp:def-reachable,bp:def-solution}
+六成分の各等式を成分ごとに展開し、整数多項式の恒等式として示す。
+基本の保存式は $q_1(\sigma_i z)=q_1(z)$ と $q_2(\sigma_i z)=q_2(z)$、
+符号変更については $q_2(\varepsilon_i z)=-q_2(z)$ である。
+リストに関する帰納法で任意長の語へ延長する。Lean では構造体の外延性、
+簡約、可換環の正規化を組み合わせる。有限範囲の整数検査ではない。
+\end{proof}
+
+\begin{definition}[整数 Euler 格子同型]\label{bp:def-lattice}
+\lean{SerreMarkov.LatticeEquivalent,SerreMarkov.latticeSetoid,SerreMarkov.solutionSetoid,SerreMarkov.solutionForgetfulMap}\leanok
+\uses{bp:def-six,bp:def-reachable,bp:def-solution}
+$\Latt(z,z')$ を、整数可逆行列 $B\in\operatorname{GL}_4(\Z)$ が存在して
+$B^{\mathsf T}M(z)B=M(z')$ となることと定める。解軌道の商から格子同型類の商への写像を
+\[
+\pi:\Sol/{\Reach}\longrightarrow\Z^6/{\Latt},\qquad [z]\longmapsto[z]
+\]
+と書く。右辺は全六つ組の格子同型商であり、像にないクラスのファイバーは空である。
+\end{definition}
+Lean では整数行列環の unit を量化する。これにより、行列式非零という有理可逆性と、
+行列式 $\pm1$ という整数可逆性を取り違えない。商を使うときは、各写像が同値関係を保存することを
+明示的に渡して定義する。
+
+\begin{proposition}[語から整数基底変更へ]\label{bp:basis-congruence}
+\lean{SerreMarkov.reachable_integral_congruence,SerreMarkov.reachable_latticeEquivalent}\leanok
+\uses{bp:def-lattice,bp:mutation-invariants}
+$\Reach(z,z')$ なら $\Latt(z,z')$ である。実際、到達語から行列式 $\pm1$ の整数基底変更行列を構成できる。
+\end{proposition}
+\begin{proof}\leanok\uses{bp:def-reachable,bp:def-six}
+一生成子に対応する基底変更を行列として与え、その合同式を直接計算する。
+語に沿ってこれらを掛け、行列式の積と合同式を帰納法で追う。
+この命題によって忘却写像は well-defined になる。一方、逆向きは一般には成立しない。
+同じ格子に複数の変異軌道があることは、後のファイバー定理の主題である。
+\end{proof}
+
+\begin{definition}[Serre 作用素と三次の判定量]\label{bp:def-serre}
+\lean{SerreMarkov.serre,SerreMarkov.shiftedSerre,SerreMarkov.symmetricForm,SerreMarkov.IntrinsicSigns.thirdMinorSum}\leanok
+\uses{bp:def-six}
+\[
+S=M^{-1}M^{\mathsf T},\qquad N=S+I,\qquad H=M+M^{\mathsf T}.
+\]
+$T(z)$ を $H$ の四つの主三次小行列式の和とする。
+\end{definition}
+ここでは $S$ を $M^{-1}M^{\mathsf T}$ と定義する。別の文献で使われる $-S$ と混同すると、
+三次元型の固有値規約が反転する。本プロジェクトの三次元型は $N^4=0$、すなわち $S$ の固有値がすべて $-1$ の場合である。
+
+\begin{theorem}[二方程式と四乗零の同値]\label{bp:matrix-nilpotent}
+\lean{SerreMarkov.solution_iff_fourth_power_zero}\leanok
+\uses{bp:def-solution,bp:def-serre}
+任意の整数六つ組について $z\in\Sol$ と $N(z)^4=0$ は同値である。
+\end{theorem}
+\begin{proof}\leanok\uses{bp:def-six,bp:def-serre,bp:def-solution}
+具体的な整数逆行列から $N$ の特性多項式を計算する。
+二方程式を代入すると特性多項式は $X^4$ となり、Cayley--Hamilton の定理から $N^4=0$ を得る。
+逆に $N^4=0$ ならば $N$ は冪零なので、その特性多項式は $X^4$ である。
+計算済みの特性多項式の三次係数と定数項を比較すると二方程式が従う。
+具体的な行列計算と一般の特性多項式の定理を組み合わせ、
+固有値や Jordan 標準形を個別に構成する必要をなくしている。
+\end{proof}
+
+\begin{definition}[基本族]\label{bp:def-family}
+\lean{SerreMarkov.family,SerreMarkov.family_isSolution}\leanok
+\uses{bp:def-solution}
+\[
+\F(x,y)=(-x,-x,-2,2,-y,-y),\qquad x,y\in\Z.
+\]
+任意のパラメータで $\F(x,y)\in\Sol$ である。
+\end{definition}
+\begin{proof}\leanok\uses{bp:def-solution}
+二方程式へ代入すると $q_1=8$、$q_2=-4$ が整数多項式恒等式として得られる。
+\end{proof}
+\begin{definition}[整数下降に用いる高さ]\label{bp:def-height}
+\lean{SerreMarkov.NegativeDescent.l1,SerreMarkov.NegativeDescent.integerL1}\leanok
+\uses{bp:def-six}
+$h(z)=|a|+|b|+|c|+|d|+|e|+|f|\in\N$ とする。
+自然数値の高さと、同じ式を整数値に取ったものを別に定義し、両者が一致することを示す。
+\end{definition}
+自然数型の高さは強帰納法に、整数型の式は不等式・多項式の正規化に使う。
+絶対値を含む式を一度に正規化せず、符号別に扱うことが境界分割の設計上重要である。
+
+\subsection{原始旗・適合基底・内在的な符号}
+\begin{theorem}[正則解の原始整数旗と適合基底]\label{bp:intrinsic-frame}
+\lean{SerreMarkov.solution_regular_has_primitive_flag,SerreMarkov.IntrinsicFrame.solution_regular_has_frame,SerreMarkov.IntrinsicFrame.frame_gram,SerreMarkov.IntrinsicFrame.frame_determinant}\leanok
+\uses{bp:matrix-nilpotent,bp:def-lattice}
+$z\in\Sol$、$N^3\ne0$ とする。原始整数ベクトル $p,\ell$ と正整数 $\kappa$ を取り、
+$Np=0$、$N\ell=-\kappa p$、$\ker N=\Z p$、$\ker N^2=\Z p+\Z\ell$ とできる。
+座標 $r(x)=\chi(x,p)$、$d(x)=\chi(x,\ell)$ は組として $\Z^2$ へ全射である。
+その全射性から得る $u,v$ を用い、基底 $(u,v,\ell,p)$ の Euler 行列は
+\[
+E=\begin{pmatrix}
+\alpha&\beta&0&1\\
+\gamma&-A&1&0\\
+-\kappa&-1&0&0\\
+-1&0&0&0
+\end{pmatrix}
+\]
+となる。基底変更行列の行列式は $\pm1$ である。
+\end{theorem}
+\begin{proof}\leanok\uses{bp:matrix-nilpotent,bp:def-lattice}
+まず有理数上で nilpotent 作用素の核と像の次元を計算する。
+整数核は自由加群内の飽和部分加群となるので、原始生成元と分裂を整数上へ戻す。
+原始的な二座標の全射性を証明し、像 $(1,0),(0,1)$ の逆像から $u,v$ を選ぶ。
+Euler 対の必要な成分を Serre 関係から導いて $E$ を得る。
+最後に $\det M=\det E=1$ を使うと、基底変更行列 $B$ について $\det(B)^2=1$ となる。
+単に有理基底が得られた段階で整数基底と呼ばないことが、この部分の形式化の要点である。
+\end{proof}
+
+\begin{proposition}[立方テンソル、content、Riemann--Roch 恒等式]\label{bp:intrinsic-formula}
+\lean{SerreMarkov.IntrinsicFrame.frame_cube_action,SerreMarkov.IntrinsicFrame.frame_cube_content,SerreMarkov.IntrinsicFrame.frame_RiemannRoch}\leanok
+\uses{bp:intrinsic-frame}
+任意の $x$ に対して $N^3x=2A\kappa^2r(x)p$ であり、$N^3$ の整数成分の content は $2|A|\kappa^2$ である。
+$\chi(x,x)=\chi(y,y)=1$ なら
+\[
+(\chi(x,y)+\chi(y,x))r(x)r(y)
+=r(x)^2+r(y)^2+A\bigl(r(x)d(y)-r(y)d(x)\bigr)^2.
+\]
+\end{proposition}
+\begin{proof}\leanok\uses{bp:intrinsic-frame}
+適合基底での $N^3$ は一つの成分だけが $2A\kappa^2$ で、他は零である。
+整数可逆合同・共役に対する content の不変性から元の基底の式へ移す。
+RR式では $q=r(y)x-r(x)y$ を取り、$r(q)=0$ を使う。
+rank核上の対称対は $-2A\,d(q)^2$ なので、$\chi(q,q)$ の展開と比較して式が得られる。
+幾何的な Riemann--Roch 定理や正階数の仮定はこの恒等式の証明には不要である。
+\end{proof}
+
+\begin{theorem}[内在量と三型の分離]\label{bp:intrinsic-kind}
+\lean{SerreMarkov.IntrinsicUnique.solution_regular_unique_parameters,SerreMarkov.IntrinsicUnique.latticeEquivalent_frame_invariants,SerreMarkov.intrinsicKind,SerreMarkov.latticeEquivalent_intrinsicKind,SerreMarkov.solution_cube_zero_iff_thirdMinorSum_zero}\leanok
+\uses{bp:intrinsic-frame,bp:intrinsic-formula,bp:def-serre}
+正則解の $(A,\kappa)$ は旗・適合基底の選択に依存せず、整数 Euler 格子同型で保存される。
+$N^3=0$ と $T=0$ は同値であり、$N^3\ne0$ のとき $T$ の符号は $A$ の符号に一致する。
+従って解を退化型 $N^3=0$、正側 $T>0$、負側 $T<0$ に重複なく分けられ、
+その型は格子同型と変異で保存される。
+\end{theorem}
+\begin{proof}\leanok\uses{bp:intrinsic-frame,bp:intrinsic-formula,bp:basis-congruence}
+二つの原始旗では $p$ の生成元の違いは $\pm1$、$\ell$ の差は $p$ の整数倍と生成元の符号だけである。
+座標の全射性と $\kappa>0$ により $\kappa$ が一致し、rank核上の対称形式から $A$ も一致する。
+対称行列の余因子を $2A\kappa^2pp^{\mathsf T}$ と書けば、主余因子の和の符号が決まる。
+分類に入る前にこれらを証明するため、分類を使って分類の型不変性を証明する循環は生じない。
+\end{proof}
+
+\begin{proposition}[実対角合同による符号の証明証書]\label{bp:intrinsic-diagonal}
+\lean{SerreMarkov.IntrinsicSignature.real_frame_diagonal_congruence,SerreMarkov.IntrinsicSignature.realFrameChange_isUnit}\leanok
+\uses{bp:intrinsic-frame,bp:intrinsic-kind}
+正則解の $H$ は実可逆合同により $\operatorname{diag}(2,-2,-2A,0)$ へ移る。
+\end{proposition}
+\begin{proof}\leanok\uses{bp:intrinsic-frame}
+適合行列から有理係数の具体的な可逆行列を構成し、合同式を成分計算する。
+実数への係数写像で同じ式が得られる。本実装の符号数は、この表示された対角成分の符号を数えた証明証書である。
+任意の実行列について慣性指数を定義して一般の Sylvester 理論を展開したAPIとは区別する。
+\end{proof}
+
+\begin{proposition}[実基底変異と反射 Hurwitz 操作]\label{bp:reflection-hurwitz}
+\lean{SerreMarkov.basisWord_reflection_hurwitz,SerreMarkov.ReflectionGroup.reachable_reflectionGroup_isometric_conjugate}\leanok
+\uses{bp:basis-congruence,bp:def-serre}
+基底元による四反射は任意の実変異語に対し Hurwitz 操作を受ける。
+従って、それらが生成する実際の整数反射部分群は変異に沿って整数等長共役となる。
+\end{proposition}
+\begin{proof}\leanok\uses{bp:basis-congruence,bp:def-reachable}
+一生成子の更新式を行列積として比較し、任意長の語に対し帰納する。
+符号変更は旧座標での反射を変えない。後の family 一意性では、抽象的な反射ラベルだけでなく、
+この実整数表現との接続を使う。Coxeter群の一般的な Hurwitz 推移性定理を仮定する命題ではない。
+\end{proof}

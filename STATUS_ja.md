@@ -1,6 +1,6 @@
 # Serre–Markov v4 の形式化状況
 
-対象は2026年10月4日のv4原稿。負側・退化側の一般分類と全負側ファイバー公式は完成した。正側の一般分類は未完である。本プロジェクトでは、以下の数学的成果を実際にLeanで検証した。原稿の主定理を公理として仮定してはいない。
+対象は2026年10月4日のv4原稿。整数六つ組の全三型の変異分類、格子同型判定、全忘却ファイバーの有限性と非有界性を、追加の分類仮定なしに形式化した。負側・退化側に加え、正側の任意の整数解も五つの実変異軌道へ一意に分類する。停止する正規化・変異同値・格子同型判定の手続きも実装した。原稿の主定理を公理として仮定してはいない。
 
 ## 検証済みの主要成果
 
@@ -53,7 +53,11 @@
 | 正側の小辺断面の完全分類 | `PositiveSmallThreeTerminal`, `PositiveFourFourChecks`, `PositiveFourFiveChecks`, `PositiveFiveFiveCensus` | 正符号領域と二手不下降から、隣接辺3/4・3/5・4/4・4/5・5/5の全整数係数を有限に抑え、実際の五代表へ到達。初期高さ上界なし |
 | 先頭辺3の追加断面 | `PositiveThreeTerminalUpToEight` | a=3またはf=3、d≤8の全二手終端点を五代表へ一意分類。d=6,7の全有限候補とd=8の不存在を網羅的に検証。d≤8は明示的な地域制限 |
 | 順序付き先頭辺4の完全分類 | `PositiveSortedFour` | a=4,d≤c,f≥4の三手不下降点はd≤5。d≥4なら既存4/4・4/5の完全列挙を通して五代表へ一意分類。巨大有理係数の非負恒等式をLeanで検証 |
-| 順序付き先頭辺5の境界排除 | `PositiveSortedFiveBoundary` | 最小外辺がa=5の二手不下降点ではd,f≥6。d=5は5/5列挙、f=5は反対辺の全列挙と23点表で排除。残る無界領域の不存在はまだ未証明 |
+| 順序付き先頭辺5の排除 | `PositiveSortedFiveBoundary`, `PositiveSortedFiveLarge` | 最小外辺がa=5の二手不下降点ではd,f≥6。残る無界領域はq2の両符号について整数の非負多項式証明書を検証し、三手不下降点の不存在を証明 |
+| 順序付き先頭辺3の無界領域 | `PositiveSortedThreeLarge`, `PositiveSortedTerminalSmall` | a=3,d≤cの三手終端点ではd≤8またはf≤5。既証明の全有限断面へ接続し、整列した最小外辺a≤4の五軌道一意分類を完了 |
+| 順序付き最小外辺の普遍上界 | `PositiveSortedLarge.sorted_first_edge_le_five` | 任意の整列した全長終端点でa≤5。a≥6をq2の両符号に対する非負多項式証明書で排除。初期高さ・係数の上界なし |
+| 正側の無条件完全分類 | `PositiveClassificationFull.positive_classification`, `positive_reaches_bounded` | 任意の正側整数解が五つの原稿代表のちょうど一つに実変異語で到達。以前の有界帰着義務も無条件に解決 |
+| 正側の完全な内在量 | `PositiveClassificationFull.positive_classification_with_invariants` | 唯一の代表に対応して任意frameのA,κを決定。cube contentによる軌道判定も無条件 |
 | 五代表の内在的な表 | `PositiveRepresentativeInvariants` | 各代表に実原始旗と整数frameを明示構成し、任意frameでA=[2,3,5,11,1],κ=[4,3,2,1,6]を証明。contentだけから推測しない |
 | 正側の小さい反対辺の完全分類 | `PositiveEndpointBounds`, `PositiveSmallEndpointCensus` | 反対辺a,fが各3〜5で一手不下降なら、他四辺の和は配置別35,36,40,48,63以下。全9配置・468有限証明書と網羅性を検証し、二手不下降から総和≤37と五軌道の一意分類へ接続 |
 | 正側の順序付き最小点への帰着 | `PositiveSortedTerminal.positive_solution_sorted_terminal_reduction`, `PositiveReverseOrbits` | 任意正側解の五代表への到達性を保持し、任意長不下降・最小外辺が先頭・次辺≤他隣接辺を満たす点へ帰着。反転点への到達仮定は置かず、五反転代表の実語を証明して移送 |
@@ -61,7 +65,11 @@
 | 正側の実放物元 | `PositiveParabolicTrace.actual_even_group_parabolic` | 正側の実半回転四つの積のtrace²=4・det1・射影的非自明性と、真の偶語群への所属を無条件に証明。有限指数値は結論しない |
 | 正側の階数・次数制約 | `PositiveRankDescent` | 正階数frameの原始核符号交代、endpoint wedge平方一致、整数零欠陥排除、実q2とのpfaffian等式とendpoint和・差の公式を全称に証明。全称下降は結論しない |
 | 正側の整数欠損とpfaffian制約 | `PositivePfaffianSign` | 正の整数RR対の欠損からpairing上界を導き、q2=+4ならκ+1≤|C01|とAκ²+Aκ≤|a−f|。一般の+4排除は結論しない |
-| 全分類の統合と停止する探索 | `FullClassificationPipeline`, `ClassificationDecision` | 正側の一般存在を明示引数として、三型の正規形と商の全単射・全ファイバー有限性へ接続。全10生成子の有限語探索をNat.findで停止させ、正規形と実語、同値判定Bool、接続語Optionを実装。正側引数はまだ無条件に供給していない |
+| 全三型の無条件完全分類 | `FullClassification.full_classification`, `canonical_orbit_map_bijective` | 全整数解に唯一の退化族・正規化負族・五正代表。正側の一般存在を実証された定理で供給し、真の解軌道商と代表集合の全単射を証明 |
+| 全忘却ファイバーの有限性 | `FullClassification.all_forgetful_fibers_finite`, `finite_fibers_and_unbounded` | 全格子同型類について真の忘却ファイバーが有限。空ファイバーも含む。正側・退化側は個数1、負側は有限候補と全単射で奇数法には厳密な積公式。ファイバー個数には共通の上界がない |
+| 停止する正規化と変異同値判定 | `FullClassification.classify`, `mutationEquivalentTest_correct`, `equivalenceWord_sound` | Solution入力について全10生成子の有限語探索が停止し、唯一の正規形と実到達語を返す。Bool判定と接続語Optionの正当性を証明。実用的な時間計算量の上界は主張しない |
+| 全解の格子同型判定 | `FullClassification.latticeEquivalentTest_correct` | 停止する正規化と有限合同検査で整数Euler格子同型を判定。偶数負側の同時合同条件も保持 |
+| 素数平方冪の明示的完全代表 | `PrimeSquareFiberRepresentatives`, `FullClassification.prime_square_power_unique_representative` | 奇素数p、e≥0についてF(p^(2e)−jp^e,jp^e)、0≤j≤(p^e−1)/2が実際の全忘却ファイバーを重複なく尽くす。個数(p^e+1)/2だけから全単射を選ぶ証明ではなく、明示前向き式を構成 |
 | 正側一手下降の無限障害と二手下降 | `PositiveLocalMinima` | 任意高さを超える正側一手局所最小の無限族を証明し、その族には二手の普遍下降語も構成 |
 | 正側基底から整数化まで | `PositiveIntegral.positive_frame_even_words_integral_SL2` | `A>0`の任意の実際の適合基底から、追加の整数環仮定なしに全偶語の共通正向き整数化を証明 |
 | 正側解から半回転データ | `IntrinsicFrame.positiveHalfTurnData` | 任意の適合整数基底で`A>0`なら全基底rankが非零となり、実際のpairingから`NormedClifford.Data`を構成 |
@@ -87,7 +95,7 @@
 | 実PSL₂(ℤ)の部分群分類 | `ModularPSLCensus.subgroup_census_unique` | 任意の実PSL₂(ℤ)部分群について、指数12・S,R固定点なし・T高々二巡回軌道を明示条件として五共役類へ一意分類。各実代表の条件充足と非共役も証明 |
 | 重複列からの帰着 | `coincident_columns_reachable_family` | 対称Gram行列の任意の二列が等しいか符号反対なら、実際の変異語で族へ帰着 |
 | 五つの整数Gram代表の分離 | `PositiveRepresentatives` | 原稿の五代表の方程式・正則性・cube content `64,54,40,22,72`を検証し、格子同型・変異の非同値を証明 |
-| 三型を合わせた代表の一意性 | `CanonicalRepresentatives.representatives_reachable_iff` | 退化・正規化負族・五正代表を合わせた代表集合で、実到達とラベルの等号が同値。真の解軌道集合への単射を構成。一般全射性は主張しない |
+| 三型を合わせた代表の一意性 | `CanonicalRepresentatives.representatives_reachable_iff` | 退化・正規化負族・五正代表を合わせた代表集合で、実到達とラベルの等号が同値。このモジュールで真の解軌道集合への単射を構成。`FullClassification`で一般全射性も供給し全単射へ接続 |
 | CRTの根数積公式 | `ChineseRoots.squareRoots_card_mul` | 互いに素な法の実際の平方根集合に全単射を構成し、根数の積公式を証明 |
 | 単位平方の素数冪根 | `UnitPrimePowerRoots` | 奇素数`p`、指数`e>0`、`p∤y`なら法`p^e`の根はちょうど`±y`、個数2 |
 | 素数冪の全局所根数 | `LocalRootFormula`, `PrimePowerZeroGeneral`, `PrimePowerNonzeroRoots` | 任意の奇素数・非負指数・整数パラメータについて、零・高付値・非零非単位・単位の全分岐を証明。平方零は素数2も含む |
@@ -100,26 +108,24 @@
 
 `n=1`では原稿の`F(9,0)`と`F(6,3)`を再現する。`n=2`では総量81の三軌道を保証する。原稿の正確なファイバー個数公式を仮定した証明ではない。
 
-## 全分類に残る証明義務
+## 完成した主分類の証明経路
 
-負側の一般存在と一意性は`NegativeClassificationFull`で完成し、任意負側解の格子上の全ファイバーの有限性も`NegativeFiberFiniteGeneral`で証明した。全負側ファイバーの有限性と正確な式も`NegativeFamilyOrbitFibers`へ無条件に接続した。主分類に残る中心的な証明義務は**正側を有界領域へ移すこと**である。任意正側解が実変異語でL1≤37の正符号領域に到達することを証明する必要がある。`PositiveReduction.positive_classification_iff_bounded_reduction`は、これが五軌道の一般分類と同値であることを証明するが、どちら側も未証明の仮定として採用していない。正符号正規化、任意長の領域保存、有界23解の網羅性と実語、五代表の非同値は完成している。
+負側では全座標・全符号の境界分割から、実family到達または元の高さからの厳密下降を証明し、無制限の実語による強帰納で全解を分類した。退化側ではMarkov型降下と行列不変量を使う。
 
-`PositiveMinimalOrbit`は全ての正側軌道に実際の最小高さの正符号解が存在し、任意長のbraid語に対して不下降であることを証明する。ただし最小高さの数値上界は結論していない。`PositiveSmallThreeTerminal`、`PositiveFourFourChecks`、`PositiveFiveFiveCensus`では、短語の不下降と特定の小辺配置から、残りの全係数の有限上界と当該断面の五軌道分類を追加の高さ仮定なしに証明した。`PositiveEndpointBounds`では反対辺が各3〜5の全配置に、四つの一手guardの積による普遍多項式証明書から有限上界を与え、`PositiveSmallEndpointCensus`で全9配置を五軌道へ一意分類した。`PositiveSortedTerminal`は五代表への到達性を保持しつつ、外辺の順序を整えた全長不下降点へ問題を帰着する。これら特定断面の分類と順序帰着だけでは、任意の正側解の一般分類は完成しない。
+正側では実際の最小高さの点を選び、正符号領域・全長不下降・外辺の整列へ帰着する。実巡回変異と、五代表への到達性を保存する反転の補題を使い、任意点がその反転点へ到達することは仮定しない。整列した最小外辺は5以下、5は不可能である。先頭辺3と4の無界領域は厳密な非負多項式証明書で排除し、残る有限断面を網羅する。各証明書では整数恒等式と各項の非負性をLeanが検査する。有限探索の結果を無界帰着の代わりに使用してはいない。
 
-正側では原稿の固有写像・正の次数・面積・凸四角形から指数12へ進む幾何的経路も残る。偶語群Δの実PSL₂(ℤ)部分群への整数化、PSL₂(ℤ)の提示同型と五部分群分類は完成したが、任意正側解のΔが指数12・固定点なし・二カスプ条件を満たすことと、拡大Γから実変異を復元する部分は未証明である。直接の有界帰着を完成できれば主分類についてこの幾何的経路を置き換えられる。
+`PositiveClassificationFull`がこの実証された経路を一般正側分類へ接続し、`FullClassification`が全三型の唯一の正規形、全忘却ファイバーの有限性、停止する決定手続きへ接続する。`FullClassificationPipeline`などの一般的な補助APIには明示的な正側完全性の引数が残るが、完成版の公開APIはそれを証明済み定理で埋めており、追加の下降・分類仮定はない。
 
-familyの一般変異一意性、全奇数法の局所根数・CRT積公式・符号商とfamily由来実軌道数、偶数法も含む候補有限性は証明済みである。`NegativeFamilyOrbitFibers`では一般全射性を使い、明示的な下降仮定を除いて全ファイバーの有限性・正確な式へ接続した。退化格子の全ファイバー個数1と、全解のファイバーの非有界性は既に無条件に証明済みである。
+## 形式化の範囲
 
-単純な一手L1高さ下降法には、全生成子で高さが下がらない負側正則解が存在する。`DescentTrap.lean`でその具体例と到達語を証明した。三手下降の一般仮説には有限探索の根拠があるが、これは普遍定理として採用していない。`NegativeDescent.LocalDescentProperty`として正確な未証明命題を定義した。重複・反対列の全てがない負側解について、259通りの長さ3以下のbraid語のどれかがL1高さを下げる、という全称の整数多項式不等式と同値である。`local_descent_implies_negative_family_surjectivity`はこの命題を仮定する帰着補題であり、その旧API自体は仮定のない負側全射性の定理ではない。無条件の主分類は、別の`NegativeClassificationFull`で、語長を制限しない実下降の全座標分割によって完成した。
+完成した目標は整数解の主分類と格子・ファイバー定理である。原稿の全ての補題を原稿と同じ証明で形式化したという意味ではない。特に双曲幾何の固有写像・写像度・面積から指数12へ進む経路、楕円曲線からの拡大とCoxeter/Hurwitzの幾何的簡約、dgカテゴリー等の付録は全体として未形式化である。これらを主分類の前提にはしていない。詳細な幾何API調査は`POSITIVE_GEOMETRY_API_ja.md`、代替経路の記録は`docs/REGULAR_OBLIGATIONS_ja.md`に残した。
 
-合成数の族で`y`を法`m=x+y`から符号を除いて復元する別案も、一般には失敗する。`CompositeFamily.mod25_parameter_change`と`mod35_parameter_change`は、`y′≢±y`なのに同じ法上で変異語が到達する具体例を検証する。これは整数上の到達性を主張せず、当該の合同不変量だけでは一般一意性を証明できないことを示す。一般一意性自体は、三次元の実整数反射表現・自由積の語の一意性・反射根の復元を使う別の代数証明で完成した（`UniversalWord`, `UniversalReflection`, `ReflectionRoots`, `FamilyReflectionBridge`, `FamilyReflectionWords`, `FamilyUniqueness`）。したがって原稿のfamily一意性の幾何的議論を形式化の前提にしていない。
+旧`NegativeDescent.LocalDescentProperty`は語長3以下の普遍的下降という強い別命題であり、未証明である。完成した負側分類は語長制限なしの実下降を用いるため、この仮説は不要である。単純な一手下降には`DescentTrap`の具体的な反例があり、正側にも任意高さの一手局所最小がある。主分類ではそれらを考慮した別の帰着を証明している。
 
-このリストは単なる記述上の未完成ではなく、全分類を結論するLean定理に必要な未証明箇所である。有限表の完全列挙だけから、任意の正側の解の分類は結論していない。
+合成数法だけからfamilyパラメータを符号を除いて復元する案も一般には成立しない。`CompositeFamily`の法25・35の具体例を残している。一般family一意性は実整数反射表現と自由積の語を使う無条件の代数証明で得られた。
 
 ## 実行と信頼境界
 
-Lean4.24.0・mathlib v4.24.0を固定。公開モジュールを実際にコンパイルし、`AxiomAudit.lean`で定理・定義と推移的な依存の公理を監査する。許可するのはLeanの標準公理`propext`, `Classical.choice`, `Quot.sound`のみ。`sorry`、原稿の定理を追加した公理、`native_decide`には依存しない。
+Lean4.24.0・mathlib v4.24.0を固定し、全公開モジュールのビルドと`AxiomAudit.lean`の推移的公理監査を完了した。許可するのはLeanの標準公理`propext`, `Classical.choice`, `Quot.sound`のみ。`sorry`、原稿の定理を追加した公理、`native_decide`には依存しない。
 
-有限列挙のPythonコードは証明書の生成器であり、信頼境界に入らない。Leanが有限計算の正しさと列挙の網羅性をそれぞれ証明する。
-
-原稿の独立精査では具体的な反例や修正不能と確定した数学的誤りは見つかっていない。これは全分類の形式化完了を意味しない。残る普遍的下降命題と幾何的証明を「克服不能」と断定する根拠も現時点ではない。
+Pythonコードは有限列挙・多項式証明書の生成器であり、信頼境界には入らない。生成されたLeanソースが有限計算の正しさ、網羅性、厳密な多項式恒等式と符号条件をそれぞれ証明する。最終ビルド・監査のログとソースSHA256は配布物の`verification`に収める。監査の宣言数にはコンパイラ生成補助定理が含まれ、原稿の定理数とは異なる。

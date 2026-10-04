@@ -1,0 +1,15 @@
+{
+  "lean_sources_modified_by_publication_preparation": false,
+  "lake_available": false,
+  "lean_build_rerun": false,
+  "github_ci": "not_yet_run",
+  "blueprint_structure": {
+    "nodes": 65,
+    "edges": 182,
+    "dag": true
+  },
+  "html_local_links_checked": 61875,
+  "html_pages": 360,
+  "html_link_errors": [],
+  "staging": "passed"
+}

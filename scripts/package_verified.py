@@ -61,11 +61,22 @@ for path in sources:
 
 files = set(sources)
 for name in ["lakefile.lean", "lake-manifest.json", "lean-toolchain", "README.md",
-             "PLAN_ja.md", "STATUS_ja.md", "CENSUS_ja.md", "POSITIVE_GEOMETRY_API_ja.md"]:
+             "PLAN_ja.md", "STATUS_ja.md", "CENSUS_ja.md", "POSITIVE_GEOMETRY_API_ja.md",
+             "HANDOFF.md", "STATUS.md", "GAPS.md"]:
     files.add(project / name)
 for directory in ["scripts", "tooling", "docs"]:
     files.update(p for p in (project/directory).rglob("*") if p.is_file() and
                  "__pycache__" not in p.parts and p.suffix not in [".so", ".pyc"])
+blueprint = project / "blueprint"
+if blueprint.is_dir():
+    for path in blueprint.rglob("*"):
+        if not path.is_file() or "__pycache__" in path.parts:
+            continue
+        if path.suffix in [".aux", ".out", ".toc", ".paux", ".fls", ".fdb_latexmk", ".pyc"]:
+            continue
+        if path.parent.name == "src" and path.name in ["print.log", "print.pdf"]:
+            continue
+        files.add(path)
 
 manifest = {str(p.relative_to(project)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(files)}
@@ -83,13 +94,17 @@ report = {
     "count_note": "Includes compiler-generated auxiliaries; not a count of manuscript theorems.",
     "allowed_axioms": ["propext", "Classical.choice", "Quot.sound"],
     "full_regular_classification": completion("SerreMarkov.FullClassification.full_classification"),
-    "negative_classification": "completed_unconditionally",
-    "degenerate_classification": "completed_unconditionally",
-    "negative_full_fiber_formulas": "completed_unconditionally",
+    "negative_classification": completion("SerreMarkov.NegativeClassificationFull.negative_classification"),
+    "degenerate_classification": completion("SerreMarkov.degenerate_classification"),
+    "negative_full_fiber_formulas": completion("SerreMarkov.NegativeFamilyOrbitFibers.odd_solution_forgetful_fiber_card"),
     "positive_general_classification": completion("SerreMarkov.PositiveClassificationFull.positive_classification"),
     "all_solution_classification": completion("SerreMarkov.FullClassification.full_classification"),
     "all_forgetful_fibers_finite": completion("SerreMarkov.FullClassification.all_forgetful_fibers_finite"),
     "computable_mutation_decision": completion("SerreMarkov.FullClassification.mutationEquivalentTest_correct"),
+    "computable_lattice_decision": completion("SerreMarkov.FullClassification.latticeEquivalentTest_correct"),
+    "canonical_orbit_bijection": completion("SerreMarkov.FullClassification.canonical_orbit_map_bijective"),
+    "positive_bounded_reduction": completion("SerreMarkov.PositiveClassificationFull.positive_reaches_bounded"),
+    "prime_square_explicit_representatives": completion("SerreMarkov.FullClassification.prime_square_power_unique_representative"),
     "own_lean_files": len(sources),
     "build_log_sha256": hashlib.sha256(log.read_bytes()).hexdigest(),
     "source_sha256": manifest,

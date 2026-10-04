@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "Please cite the released version of this formalization; include its version and commit."
+title: "Serre–Markov classification: Lean formalization and Blueprint"
+type: software
+authors:
+  - family-names: "Ueda"
+    given-names: "Kazushi"
+abstract: "Lean formalization of the numerical classification, forgetful fibers and terminating equivalence tests, with a Japanese Blueprint."
+repository-code: "https://github.com/uedakazushi/serre-markov-lean"
+url: "https://uedakazushi.github.io/serre-markov-lean/"
+license:
+  - MIT
+  - CC-BY-4.0

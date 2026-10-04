@@ -1,0 +1,584 @@
+\section{正側の直接代数的分類}
+
+正側の形式化は、原稿の双曲幾何による証明とは異なる経路を取る。
+原始旗から得た階数・次数と Riemann--Roch 恒等式を使って符号を正規化し、
+自然数値の高さが最小になる解を取る。その最小性から実際の変異語に対応する
+多項式不等式を導き、非負多項式の厳密な証明書で大きな係数の領域を除外する。
+残った断面だけを、先に証明した上界の下で完全に列挙する。
+この順序により、入力係数の上界を仮定しない全称定理へ到達する。
+
+以下では $z=(a,b,c,d,e,f)$ を上三角 Gram 行列の六成分とし、
+$q_1(z)=8$、$q_2(z)^2=16$ を解の条件とする。
+$T(z)$ は対称形式の三次主小行列式の和であり、正側の条件は $T(z)>0$ である。
+符号付き変異による到達可能性を $\Reach(z,w)$ と記す。
+この章の最後の定理では、$T(z)>0$ から正則性も導かれるため、
+正則性は別の仮定として残っていない。
+
+\subsection{符号正規化と正の領域の閉性}
+
+\begin{definition}[正の領域、短語終端性、外周の順序]
+\label{bp:pos-chamber}
+\lean{SerreMarkov.PositiveChamber.Chamber,SerreMarkov.PositiveChamber.Coordinates,SerreMarkov.PositiveShortWord.ShortTerminal,SerreMarkov.PositiveSortedTerminal.AllTerminal,SerreMarkov.PositiveSortedTerminal.SortedOuter}
+\leanok
+正の領域を
+\[
+ \mathcal C=\{z\in\Sol:T(z)>0,\quad a,b,c,d,e,f\geq3\}
+\]
+とする。高さは $h(z)=|a|+|b|+|c|+|d|+|e|+|f|\in\N$ である。
+長さ $n$ 以下の、三つの変異とその逆だけからなるすべての語 $v$ に対し
+\[
+ h(z)\leq h(vz)
+\]
+が成り立つことを、$n$--短語終端性と呼ぶ。
+すべての $n\in\N$ について短語終端であることを全語終端性と呼ぶ。
+外周の順序条件は
+\[
+ a\leq c,\qquad a\leq d,\qquad a\leq f,\qquad d\leq c
+ \tag{O}
+\]
+である。ここで「外周」は四つの成分 $a,d,f,c$ を指し、
+六成分全体を大小順に並べる操作ではない。
+\end{definition}
+
+\begin{proposition}[原始階数に沿う符号正規化]
+\label{bp:pos-normalization}
+\lean{SerreMarkov.PositiveNormalization.positive_frame_normalization,SerreMarkov.PositiveHeightNormalization.positive_solution_height_normalization}
+\leanok
+$z\in\Sol$、$T(z)>0$ ならば、$\Reach(z,w)$ を満たす $w\in\mathcal C$ が存在し、
+$h(w)=h(z)$ である。
+さらに、$z$ の内在的な旗と基底を一つ取ったとき、
+対応する $w$ の旗と基底を、すべての基底階数が正となるように構成できる。
+この構成は旗の整数不変量 $\kappa$ と $A$ を保存する。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:def-solution,bp:def-reachable,bp:intrinsic-kind,bp:intrinsic-frame,bp:def-height,bp:pos-chamber}
+\leanok
+正側の Riemann--Roch 公式から、自己 Euler 数が $1$ の基底元の階数 $r_i$ は
+零にならない。各基底元に $s_i=\operatorname{sign}(r_i)\in\{1,-1\}$ を掛ける。
+$D=\operatorname{diag}(s_0,s_1,s_2,s_3)$ は $D^2=I$ を満たす整数可逆行列であり、
+\[
+ M(w)=D^{\mathsf T}M(z)D,\qquad
+ w_{ij}=s_i s_j z_{ij}
+\]
+となる。Lean では Gram 行列だけを取り替えるのでなく、
+この可逆行列で原始旗の全データを輸送し、輸送後の階数が $s_i r_i$ であることも示す。
+四つの符号を変更する有限語が実装されているため、これは実際の $\Reach$ の証人を与える。
+
+正になった階数 $r_i,r_j$ と次数 $d_i,d_j$ は
+\[
+ H_{ij}r_i r_j=r_i^2+r_j^2+A(r_i d_j-r_j d_i)^2
+\]
+を満たし、$A>0$ から $H_{ij}\geq2$ を得る。
+等号 $H_{ij}=2$ ならば $(r_i-r_j)^2$ と
+$A(r_i d_j-r_j d_i)^2$ がともに零になり、階数と次数が一致する。
+別の基底元との Riemann--Roch 公式も比較すると、対称 Gram 行列の二行が一致する。
+しかし $q_2^2=16$ と行の一致から $T(z)\leq0$ が導かれる。
+正側ではこの等号は不可能なので、整数性により $H_{ij}\geq3$ である。
+各成分の絶対値は符号変更で変わらないため、高さも保存される。
+\end{proof}
+
+\begin{proposition}[任意の braid 語に対する閉性]
+\label{bp:pos-closure}
+\lean{SerreMarkov.PositiveChamber.positive_solution_absolute_bounds,SerreMarkov.PositiveChamber.positive_triangle_bounds,SerreMarkov.PositiveChamber.applyWord_preserves_chamber}
+\leanok
+正側の任意の解について、六成分の絶対値はすべて $3$ 以上である。
+また $z\in\mathcal C$ に三つの変異とその逆を任意回施しても、結果は $\mathcal C$ に属する。
+この閉性の語長には上界を置かない。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-normalization,bp:pos-chamber,bp:intrinsic-frame,bp:def-reachable}
+\leanok
+絶対値の下界は符号正規化した解の下界を元へ戻せばよい。
+閉性には、変異後の成分が正であることも必要である。
+三角形の欠損を
+\[
+ \delta(u,v,w)=u^2+v^2+w^2-uvw
+\]
+とおく。対称形式の余因子行列は旗の公式から非負の対角成分を持つため、
+四つの三角形 $(a,b,d)$、$(a,c,e)$、$(b,c,f)$、$(d,e,f)$ で $\delta\leq4$ となる。
+$u,v,w\geq3$ かつ $\delta(u,v,w)\leq4$ ならば $uv-w>0$ である。
+実際、$uv-w\leq0$ と仮定すると
+$w(w-uv)\geq0$、$u^2,v^2\geq9$ から $\delta\geq18$ となって矛盾する。
+
+六つの基本操作で新たに現れる成分は、いずれかの三角形の $uv-w$ である。
+よって変異後の六成分は正である。
+解の方程式と正側の符号は既証の変異不変性から保存されるので、
+変異後にも絶対値の下界を適用でき、その正の成分はすべて $3$ 以上になる。
+最後に語について帰納する。符号変更自体はこの正の領域を保存しないため、
+閉性の命題は braid 生成元六個に限っている。
+\end{proof}
+
+\begin{lemma}[整数性による三角形の強い制約]
+\label{bp:pos-triangle}
+\lean{SerreMarkov.PositiveAdjacentThrees.chamber_no_adjacent_threes,SerreMarkov.PositiveThreeTriangles.a_three_incident_bounds,SerreMarkov.PositiveTriangleLower.chamber_all_triangle_bounds}
+\leanok
+$z\in\mathcal C$ では、どの三角形にも値 $3$ の辺が二つ現れない。
+特に $a=3$ ならば $b,c,d,e\geq4$ である。
+さらに、四つの三角形すべてに対して
+\[
+ \delta(a,b,d),\ \delta(a,c,e),\ \delta(b,c,f),\ \delta(d,e,f)\leq-7
+ \tag{T}
+\]
+が成り立つ。この命題は短語終端性を仮定しない。
+\end{lemma}
+
+\begin{proof}
+\uses{bp:pos-closure,bp:def-solution,bp:pos-chamber}
+\leanok
+まず $a=d=3$ を排除する。逆変異後も成分が $3$ 以上であることから
+$3\leq b\leq6$ となる。$b=3,6$ の場合、$q_2=\pm4$ は法 $3$ で不可能である。
+$b=4$ の場合、$q_1=8$ と $q_2=\pm4$ から $e$ を消去すると
+\[
+ -11c^2+26cf\ \pm24(c+f)-11f^2-144=0
+\]
+を得る。$b=5$ の場合は
+\[
+ -11c^2+28cf\ \pm36(c+f)-11f^2-234=0
+\]
+である。どちらの符号でも法 $27$ に解がないことを、
+$27^2$ 個の剰余対に関する有限命題として Lean の kernel で検査する。
+これは全整数解に適用できる合同障害であり、整数の絶対値を一定範囲で調べる実験ではない。
+実際の変異で三角形の辺を位置替えすると、同じ障害をほかの二辺にも適用できる。
+
+次に三角形高さ $u+v+w$ に関する強い帰納法を行う。
+$2w>uv$ ならば Vieta 更新 $w\mapsto uv-w$ は三角形高さを厳密に減らし、
+$\delta$ を保存する。ほかの辺も同様である。
+更新後が正の領域にあることは前命題から従う。
+したがって三つの不等式 $2w\leq uv$、$2v\leq uw$、$2u\leq vw$
+が揃った場合だけを直接評価すればよい。
+順序を $3\leq u\leq v\leq w$ とすれば
+\[
+ (w-v)(uv-w-v)\geq0
+\]
+が使える。$u=3$ なら $v\geq4$、$u\geq4$ なら $v\geq u$ なので、
+これらの積と平方の非負性から $\delta\leq-7$ を得る。
+四つの三角形の比較は、それぞれを第一の三角形へ移す具体的な変異で接続する。
+\end{proof}
+
+\subsection{実際の最小元と、有限語に対応する不等式}
+
+\begin{proposition}[正側の軌道における最小高さ]
+\label{bp:pos-minimum}
+\lean{SerreMarkov.PositiveMinimalOrbit.positive_solution_reachable_minimal_chamber,SerreMarkov.PositiveMinimalOrbit.positive_solution_reachable_all_terminal}
+\leanok
+正側の任意の解 $z$ に対して、$\Reach(z,w)$ を満たす $w\in\mathcal C$ が存在し、
+$z$ から到達できるすべての $v\in\mathcal C$ に対して $h(w)\leq h(v)$ である。
+その $w$ は全語終端である。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-normalization,bp:pos-closure,bp:pos-chamber,bp:def-height,bp:def-reachable}
+\leanok
+自然数上の述語
+\[
+ P(n)\ \Longleftrightarrow\
+ \exists w\in\mathcal C,\quad\Reach(z,w),\quad h(w)=n
+\]
+を定義する。符号正規化により $P(n)$ を満たす $n$ が少なくとも一つ存在する。
+Lean の $\N$ の整列性から、その最小値を取る。
+この段階では最小値の数値上界も、最小元へ向かう下降語も必要ない。
+最小元 $w$ に任意の有限 braid 語を施した解は、閉性により再び $\mathcal C$ に属し、
+$z$ からも到達できる。最小性をその解に適用すると全語終端性が得られる。
+
+最小元の存在は非構成的な選択を含み、これだけでは停止算法を与えない。
+また、短い語で下降しない点を直ちに全体の最小元と認定する命題でもない。
+後の証明書は、存在を確保した全語終端元の必要条件を利用する。
+\end{proof}
+
+\begin{lemma}[語の高さ差を多項式として扱う]
+\label{bp:pos-guards}
+\lean{SerreMarkov.PositiveShortWord.noDrop_iff_heightPolynomial,SerreMarkov.PositiveShortWord.shortTerminal_balances}
+\leanok
+$z\in\mathcal C$ と braid 語 $v$ に対し、
+\[
+ H_v(z)=\sum_{i<j}(vz)_{ij}-\sum_{i<j}z_{ij}
+\]
+は整数係数多項式であり、$h(z)\leq h(vz)$ と $H_v(z)\geq0$ は同値である。
+二短語終端性から、特に次の八つの不等式が得られる。
+\[
+\begin{array}{ll}
+2(d+e)\leq a(b+c),&2(b+c)\leq a(d+e),\\
+2(b+f)\leq d(a+e),&2(a+e)\leq d(b+f),\\
+2(c+e)\leq f(b+d),&2(b+d)\leq f(c+e),\\
+2(e+f)\leq c(a+b),&2(a+b)\leq c(e+f).
+\end{array}
+\tag{H}
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{bp:pos-closure,bp:pos-chamber,bp:def-height}
+\leanok
+正の領域では高さの絶対値記号を外せる。閉性によって $vz$ でも同じことができるため、
+二つの高さの差は六成分の和の差になる。
+語の作用は整数多項式によって定義されているので、$H_v$ も整数多項式である。
+六つの一文字語と、二つの二文字語に短語終端性を適用し、
+実際の変異公式を展開すると (H) が得られる。
+ここで不等式を任意に追加しているわけではなく、それぞれに実際の語が付いている。
+後の証明書では、同じ方法で三文字語やさらに長い有限語の $H_v\geq0$ も使う。
+\end{proof}
+
+\begin{proposition}[五代表と整数不変量による分離]
+\label{bp:pos-representatives}
+\lean{SerreMarkov.PositiveExamples.representative,SerreMarkov.PositiveExamples.representative_isSolution,SerreMarkov.PositiveExamples.representative_positive_marker,SerreMarkov.PositiveExamples.representatives_reachable_iff}
+\leanok
+次の五つの解は正側に属し、互いに符号付き変異で到達できない。
+\[
+\begin{array}{c|rrrrrr|r}
+&a&b&c&d&e&f&\operatorname{cont}(N^3)\\\hline
+\mathbb P^3&4&10&20&4&10&4&64\\
+Q_3&5&14&40&5&16&4&54\\
+V_5&5&7&25&5&22&5&40\\
+V_{22}&7&8&18&4&13&4&22\\
+\mathrm{X72}&-6&-7&-3&3&7&6&72
+\end{array}
+\]
+ここで $N$ は shifted Serre 行列、$\operatorname{cont}$ は全成分の非負最大公約数である。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:def-solution,bp:def-reachable,bp:intrinsic-kind}
+\leanok
+五つの $q_1,q_2,T$ と $N^3$ の content を厳密な整数計算で検査する。
+整数格子同型の下で $N$ は整数可逆行列による共役で移り、
+行列の content はこの共役で保存される。
+変異到達可能性は整数格子同型を与えるから、content の異なる二代表は到達できない。
+この段階で示すのは例の成立と分離だけであり、全解を尽くすことはまだ使っていない。
+\end{proof}
+
+\begin{proposition}[高さ $37$ 以下の正の領域の完全分類]
+\label{bp:pos-bounded}
+\lean{SerreMarkov.PositiveBounded.bounded_iff_table,SerreMarkov.PositiveBounded.bounded_solution_card,SerreMarkov.PositiveBounded.bounded_classification_unique}
+\leanok
+$z\in\mathcal C$ かつ $h(z)\leq37$ を満たす解はちょうど $23$ 個あり、
+各解から五代表のちょうど一つへ到達する具体的な語が与えられる。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-representatives,bp:def-solution,bp:def-reachable}
+\leanok
+$a,b,c,d,f$ から $3$ を引いた五つの非負 offset を列挙する。
+残る $e\geq3$ と高さ上界から、五 offset の和は $19$ 以下である。
+$q=q_2(z)\in\{4,-4\}$ とすれば、$b\geq3$ なので
+\[
+ e=\frac{af+cd-q}{b}
+\]
+が整数として一意に復元される。
+offset の再帰的な列挙が、指定された長さと和の上界を満たすすべての列を含むことを証明し、
+各真の解が候補リストに現れることを、除法の正当性を含めて示す。
+候補を元の解の条件で filter した結果が $23$ 行の表に一致する。
+表の各行には語が付いており、その語が宣言された代表へ実際に移すことを kernel で検査する。
+
+この証明は指定された有界領域での完全列挙である。
+全称分類に利用するには、任意の正側解の軌道がこの領域と交わることを別に証明しなければならない。
+後半の証明書と境界断面の評価が、まさにその不足を埋める。
+\end{proof}
+
+\subsection{逆順化を使う際の同値関係の管理}
+
+\begin{lemma}[逆順化による五代表への到達可能性の保存]
+\label{bp:pos-reversal}
+\lean{SerreMarkov.PositiveReversal.reverseSix_applyWord,SerreMarkov.PositiveReversal.reverseSix_shortTerminal_iff,SerreMarkov.PositiveReverseOrbits.reverse_sporadic_reachable_iff}
+\leanok
+$R(a,b,c,d,e,f)=(f,e,c,d,b,a)$ とおく。
+$R$ は正の領域と高さ、各長さの短語終端性を保存する。
+各代表 $p_r$ に対して
+\[
+ \Reach(Rz,p_r)\quad\Longleftrightarrow\quad\Reach(z,p_r)
+ \tag{R}
+\]
+が成り立つ。
+\end{lemma}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-guards,bp:pos-representatives,bp:pos-bounded,bp:def-reachable}
+\leanok
+逆順化は生成元を
+\[
+ \mu_1\leftrightarrow\mu_3^{-1},\qquad
+ \mu_2\leftrightarrow\mu_2^{-1},\qquad
+ \mu_3\leftrightarrow\mu_1^{-1}
+\]
+で取り替える。符号変更も逆の基底番号へ移す。
+この生成元置換を $\rho$ とすると、実際の式を展開して
+$R(vz)=\rho(v)R(z)$ を証明する。
+$\rho$ は語長を保存する対合なので、短語終端性も同じ長さで輸送できる。
+
+(R) にはさらに $Rp_r$ と $p_r$ の到達可能性が必要である。
+各代表とその逆順を、既に検証済みの $23$ 行の表へ結び付け、
+同じ代表へ到達する具体的な語を合成する。
+これにより $Rp_r$ から $p_r$ への到達可能性が得られ、
+任意の $z$ から代表へ向かう語を逆順化して (R) を示せる。
+ここでは一般の $z$ について $\Reach(z,Rz)$ を主張していない。
+逆順化で quotient を勝手に広げず、必要な五つの軌道所属述語だけを保存することが重要である。
+\end{proof}
+
+\begin{proposition}[順序付きの全語終端領域への帰着]
+\label{bp:pos-sorted}
+\lean{SerreMarkov.PositiveSortedTerminal.positive_solution_sorted_terminal_reduction}
+\leanok
+正側の任意の解 $z$ に対して、全語終端性と (O) を満たす $w\in\mathcal C$ が存在し、
+各五代表 $p_r$ に対して
+\[
+ \Reach(w,p_r)\quad\Longleftrightarrow\quad\Reach(z,p_r)
+\]
+が成り立つ。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-minimum,bp:pos-reversal,bp:pos-chamber,bp:def-reachable}
+\leanok
+全語終端元を取る。三文字の巡回語
+$C=[\mu_1,\mu_2,\mu_3]$（この順に作用）は実際に
+\[
+ C(a,b,c,d,e,f)=(d,e,a,f,b,c)
+\]
+を与える。この作用は高さを保存し、外周 $a,d,f,c$ を巡回する。
+全語終端性も、$C$ の語と後続語を連結し、高さ保存を使えば輸送できる。
+四つの巡回位置のどれかを選ぶと、第一成分が外周の最小値になる。
+
+次に $d\leq c$ ならその点を採用する。
+$d>c$ なら、逆順化の後に $C^2$ を施す。
+外周の最小値は第一成分に残り、$d,c$ の比較が逆になる。
+巡回語は実際の到達可能性を保存し、逆順化は前補題の (R) を保存する。
+そのため最終点 $w$ の各代表への到達可能性は元の $z$ と同値である。
+途中で逆順化を使った場合にも $\Reach(z,w)$ を必要としない形で帰着を述べている。
+\end{proof}
+
+\subsection{非負多項式証明書による無限領域の排除}
+
+\begin{proposition}[順序付き終端元の第一成分は $5$ 以下]
+\label{bp:pos-large}
+\lean{SerreMarkov.PositiveSortedLarge.certificate_minus,SerreMarkov.PositiveSortedLarge.certificate_plus,SerreMarkov.PositiveSortedLarge.sorted_first_edge_le_five}
+\leanok
+$z\in\mathcal C$ が全語終端性と (O) を満たすならば $a\leq5$ である。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-guards,bp:pos-triangle,bp:def-solution}
+\leanok
+$a\geq6$ と仮定する。非負整数 $A,B,C,D,E,F$ を
+\[
+ z=(A+6,\ B+3,\ A+C+D+6,\ A+D+6,\ E+3,\ A+F+6)
+ \tag{L}
+\]
+で導入する。これは $A=a-6$、$B=b-3$、$C=c-d$、$D=d-a$、
+$E=e-3$、$F=f-a$ であり、非負性は正の領域と (O) から従う。
+$q_2^2=16$ を $q_2=4$ と $q_2=-4$ の二場合に分ける。
+
+各場合の Lean ファイルには、次の形の厳密な多項式恒等式が収録されている。
+\[
+ K+P+U(q_1-8)+V(q_2-\varepsilon4)=0,
+ \qquad K>0,\quad\varepsilon\in\{1,-1\}.
+ \tag{C}
+\]
+$P$ は、非負整数係数と非負な guard の積の和である。
+guard は具体的な語を施した後の成分から $3$ を引いたもの、
+その語の高さ差 $H_v$、(T) に対応する $-7-\delta$、
+または正側の整数条件に由来するものとして定義される。
+各 guard の非負性は、閉性、全語終端性、三角形の制約から個別に証明されている。
+正の整数倍で guard を正規化する場合も、その倍数関係を多項式恒等式で検査する。
+
+Lean は $P\geq0$ を和と積の非負性の証明で組み立て、
+(C) 自体を $\code{ring}$ により整数上の恒等式として検査する。
+解の方程式を代入すると $K+P=0$ となり、$K>0$ と矛盾する。
+二符号それぞれに証明書があるため、領域 (L) 全体が排除される。
+
+証明書の係数は大きいが、入力変数 $A,B,C,D,E,F$ に上界はない。
+有限範囲の点で不等式を評価したものではなく、全非負整数変数に適用できる恒等式と符号証明である。
+また、この大型領域の証明書は全語終端性から必要な有限語の guard を取り出す。
+三短語終端性だけでこの領域を排除したと読み替えてはいけない。
+\end{proof}
+
+\begin{proposition}[第一成分 $3$ の無限領域と有限境界]
+\label{bp:pos-three}
+\lean{SerreMarkov.PositiveSortedThreeLarge.a_three_sorted_small_boundary,SerreMarkov.PositiveSortedTerminalSmall.first_three_sorted_classification}
+\leanok
+$z\in\mathcal C$、$a=3$、$d\leq c$、三短語終端性を仮定すると
+\[
+ d\leq8\quad\text{または}\quad f\leq5
+\]
+である。この条件を満たす $z$ は五代表のちょうど一つへ到達する。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-guards,bp:pos-triangle,bp:pos-bounded,bp:pos-representatives}
+\leanok
+$d\geq9$、$f\geq6$ と仮定する。
+$a=3$ の三角形制約から $b,e\geq4$ であるから
+\[
+ z=(3,\ B+4,\ C+D+9,\ D+9,\ E+4,\ F+6)
+\]
+と非負 offset で書ける。
+$q_2=\pm4$ の各分岐で、(C) と同じ形の証明書がある。
+ここでは非負係数多項式と、長さ $3$ 以下の語の $H_v\geq0$ などを用いる。
+従ってこの二つの下界を同時に満たす領域は不可能である。
+
+$d\leq8$ の場合は、$d=3,4,5,6,7,8$ を分ける。
+$d=3$ は隣接する二辺が $3$ となる合同障害で排除される。
+各残りの固定断面は、実際の短語比較から導いた座標上界の下で完全に符号化される。
+$d=4,5,6,7$ の終端候補は検証済みの $23$ 行の表に入り、$d=8$ には終端候補がない。
+従って前の有界分類を適用できる。
+
+$f\leq5$ の場合には、小さい対辺 $a,f\in\{3,4,5\}$ の共通評価を用いる。
+一文字の高さ guard を $g_0,g_1,g_2,g_3$、$T_0=b+c+d+e$ とすると、
+具体的に
+\[
+\begin{split}
+ Q&=b^2+c^2+d^2+e^2-fbc-abd-ace-fde+afcd,\\
+ H&=cd-be,\\
+ g_0&=a(b+c)-2(d+e),\qquad g_1=a(d+e)-2(b+c),\\
+ g_2&=f(b+d)-2(c+e),\qquad g_3=f(c+e)-2(b+d)
+\end{split}
+\]
+と定めた二次式について、厳密な恒等式
+\[
+ D_0 Q-R_0 H
+ =K_0T_0^2+4(f^2-4)g_0g_1+4(a^2-4)g_2g_3
+ +(a+2)^2(f+2)^2(b+e-c-d)^2
+\]
+が成立する。ここで
+\[
+ D_0=16(a+2)(f+2),\quad R_0=8af(a+2)(f+2),\quad
+ K_0=(a-2)(f-2)\bigl(16-(a-2)(f-2)\bigr)>0.
+\]
+$Q=8-a^2-f^2$ と $H=q_2-af$ を代入し、非負項を落とすと $T_0$ の上界が得られる。
+対辺の値に応じた上界は $35,36,40,48,63$ のいずれかである。
+この証明済み上界で候補を完全列挙すると、二短語終端の解の全高さは $37$ 以下になる。
+各候補で $e=(af+cd-q_2)/b$ の復元を検査するため、候補を枝刈りしても真の解を失わない。
+こうして二つの有限境界が有界分類へ接続される。
+\end{proof}
+
+\begin{proposition}[第一成分 $4$ の分類]
+\label{bp:pos-four}
+\lean{SerreMarkov.PositiveSortedFour.a_four_sorted_adjacent_le_five,SerreMarkov.PositiveSortedFour.a_four_sorted_short_terminal_classification}
+\leanok
+$z\in\mathcal C$、$a=4$、$4\leq d\leq c$、$4\leq f$、三短語終端性を仮定する。
+このとき $d\leq5$ であり、$z$ は五代表のちょうど一つへ到達する。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-guards,bp:pos-triangle,bp:pos-bounded,bp:pos-representatives}
+\leanok
+$d\geq6$ ならば
+\[
+ z=(4,\ B+3,\ C+D+6,\ D+6,\ E+3,\ F+4)
+\]
+と非負 offset で書ける。
+$q_2=4,-4$ のそれぞれに、三文字以内の実際の語から得る guard を使った
+(C) 型の証明書があり、この領域を排除する。
+従って $d=4$ または $d=5$ である。
+
+これらの断面では二短語終端性から座標上界を導き、
+有限候補の encoding の完全性を示した上で kernel による全検査を行う。
+$a=d=4$ の場合の候補は
+\[
+ (4,6,4,4,6,4),\qquad (4,11,5,4,4,5),
+\]
+$a=4,d=5$ の場合の候補は
+\[
+ (4,4,4,5,11,5)
+\]
+だけである。これらはすべて既証の $23$ 行の表に含まれ、実際の語で代表へ移る。
+到達する代表の一意性は、整数 content による代表の分離から従う。
+順序条件 (O) のすべてを断面の列挙へ追加する必要はなく、
+より広い断面を分類してから必要な部分を取り出している。
+\end{proof}
+
+\begin{proposition}[第一成分 $5$ の排除]
+\label{bp:pos-five}
+\lean{SerreMarkov.PositiveSortedFiveBoundary.first_five_sorted_large_region,SerreMarkov.PositiveSortedFiveLarge.a_five_sorted_large_impossible}
+\leanok
+$z\in\mathcal C$ が (O) と三短語終端性を満たすならば $a=5$ は不可能である。
+\end{proposition}
+
+\begin{proof}
+\uses{bp:pos-chamber,bp:pos-guards,bp:pos-triangle,bp:pos-bounded}
+\leanok
+まず (O) から $d,f\geq5$ である。
+$d=5$ の二短語終端断面は、導出した上界と完全候補 encoding による検査から
+\[
+ z=(5,11,4,5,4,4)
+\]
+の一つだけである。これは $a\leq c$ に反する。
+$f=5$ ならば、小さい対辺の完全検査から $h(z)\leq37$ となる。
+$23$ 行の表では各行の外周に $4$ 以下の成分があるため、
+外周の最小値 $a$ が $5$ という条件に反する。
+従って $d,f\geq6$ でなければならない。
+
+残る領域は
+\[
+ z=(5,\ B+3,\ C+D+6,\ D+6,\ E+3,\ F+6)
+\]
+で非負 offset を導入して表す。
+$q_2=\pm4$ の二場合に、次数 $7$ の厳密な (C) 型証明書がある。
+その非負 guard は、三文字以内の語の高さ差と、
+その語を施した点の成分下界・三角形下界から構成される。
+三短語終端性と正の領域の閉性によりすべての guard が非負となり、
+$K+P=0$ と $K>0$ の矛盾を得る。
+有限断面の排除と無限領域の排除を合わせることで、$a=5$ 全体が閉じる。
+\end{proof}
+
+\subsection{仮定の残らない正側分類への接続}
+
+\begin{theorem}[順序付き全語終端元の分類]
+\label{bp:pos-terminal-classification}
+\lean{SerreMarkov.PositiveClassificationFull.sorted_terminal_classification}
+\leanok
+$z\in\mathcal C$ が全語終端性と (O) を満たすならば、五代表のちょうど一つへ到達する。
+\end{theorem}
+
+\begin{proof}
+\uses{bp:pos-large,bp:pos-three,bp:pos-four,bp:pos-five,bp:pos-representatives,bp:pos-chamber}
+\leanok
+大型領域の排除により $a\leq5$、正の領域の定義により $a\geq3$ である。
+したがって $a=3,4,5$ を分ければ十分である。
+$a=5$ は前命題で不可能であり、$a=3$ と $a=4$ は各断面の分類で五代表へ到達する。
+全語終端性から必要な二短語・三短語終端性を取り出すことができる。
+各断面の代表の一意性は既証なので、それをそのまま統合する。
+
+この最終接続に「すべての終端点は小さい」という未証明の仮定はない。
+大型領域の全称証明書と、有限境界の完全検査は独立の命題として完成し、
+ここで初めてそれらを合わせて全終端領域を覆っている。
+\end{proof}
+
+\begin{theorem}[正側の全変異軌道分類と直接判定]
+\label{bp:pos-classification}
+\lean{SerreMarkov.PositiveClassificationFull.positive_classification,SerreMarkov.PositiveClassificationFull.positive_reaches_bounded,SerreMarkov.PositiveClassificationFull.positive_reachable_iff_cube_content}
+\leanok
+上界を仮定しない任意の整数解 $z\in\Sol$ について、$T(z)>0$ ならば
+\[
+ \exists! r\in\{0,1,2,3,4\},\quad\Reach(z,p_r).
+\]
+その軌道は正の領域の高さ $37$ 以下の断面と交わる。
+さらに各 $r$ に対し
+\[
+ \Reach(z,p_r)\quad\Longleftrightarrow\quad
+ \operatorname{cont}(N(z)^3)=\operatorname{cont}(N(p_r)^3)
+\]
+である。
+\end{theorem}
+
+\begin{proof}
+\uses{bp:pos-sorted,bp:pos-terminal-classification,bp:pos-representatives,bp:pos-bounded,bp:def-reachable,bp:def-solution}
+\leanok
+順序付き全語終端元 $w$ に帰着する。
+その $w$ には一意な代表があり、五つの軌道所属述語が $z$ と同値だから、
+同じ存在と一意性が $z$ にも成り立つ。
+各代表から高さ $37$ 以下の表の一行へ戻る具体的な語が既にあるので、
+全称分類と合成すると、任意の $z$ から有界領域へ到達することも従う。
+
+content による判定の順方向は整数共役不変性である。
+逆方向では全称分類から、$z$ がある $p_s$ へ到達することを得る。
+content の一致と表の五つの値の相異性から $s=r$ が従う。
+したがって content は五代表の識別だけでなく、正側の任意の解の軌道を判定する。
+\end{proof}
+
+原稿の正側証明では、半回転群の商への固有写像、その次数、カスプの周辺次数、
+指数 $12$ のモジュラー部分群、群から Gram 行列への復元を経由していた。
+この章の主分類はそれらの幾何的命題を依存関係に含めず、
+元の整数方程式、実際の変異、旗の線形代数、整数合同障害、非負多項式証明書、
+証明済み上界の下での完全列挙から直接導いている。
+主結論の形式化完成を、原稿の幾何的証明の全補題の形式化完成と同一視しない。

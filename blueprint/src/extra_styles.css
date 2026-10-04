@@ -1,0 +1,5 @@
+body {font-family: "Noto Sans CJK JP", "Hiragino Kaku Gothic ProN", sans-serif; line-height: 1.8;}
+.main-text {max-width: 1000px;}
+.lean_decl, code, tt {overflow-wrap: anywhere;}
+.theorem, .definition, .lemma, .proposition {margin: 1.5em 0; padding: 1em; border-left: 3px solid #2a6a55;}
+.proof {padding: 0.6em 1em;}
